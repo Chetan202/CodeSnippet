@@ -33,11 +33,13 @@ https://github.com/user-attachments/assets/434a3a48-9698-43be-a564-f3b0393d1b69
 ![image](https://github.com/user-attachments/assets/aebff188-8d71-43cc-9060-ec3cec195753)
 
 # Notification
-
-![image](https://github.com/user-attachments/assets/f7ab560f-ee2b-473b-a764-6060572f47c6)
-![image](https://github.com/user-attachments/assets/b224c506-7a46-432b-8acf-8391f487c3c9)
-![image](https://github.com/user-attachments/assets/e17a1f5f-58f4-4433-9f1c-eb2323880d0a)
-![image](https://github.com/user-attachments/assets/29c5a256-b67e-4fb0-88c5-077068ee4951)
+<!-- Example: All four images, resized to 300px wide, centered in a row -->
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f7ab560f-ee2b-473b-a764-6060572f47c6" width="300" alt="Image 1" />
+  <img src="https://github.com/user-attachments/assets/b224c506-7a46-432b-8acf-8391f487c3c9" width="300" alt="Image 2" />
+  <img src="https://github.com/user-attachments/assets/e17a1f5f-58f4-4433-9f1c-eb2323880d0a" width="300" alt="Image 3" />
+  <img src="https://github.com/user-attachments/assets/29c5a256-b67e-4fb0-88c5-077068ee4951" width="300" alt="Image 4" />
+</p>
 
 ---
 Title: CodeSnippet
