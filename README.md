@@ -14,6 +14,9 @@ https://github.com/user-attachments/assets/434a3a48-9698-43be-a564-f3b0393d1b69
 
 ![FireShot Webpage Capture 019 - 'CodeHub - Home' - localhost](https://github.com/user-attachments/assets/cd90731e-0b41-4868-a0d7-84e7502e94c1)
 
+![image](https://github.com/user-attachments/assets/e9a09925-9d13-4099-938d-0f9f25d08f24)
+
+
 # Normal User Home page
 
 ![image](https://github.com/user-attachments/assets/cf848c3e-1ac5-4604-a169-f52e0e065522)
