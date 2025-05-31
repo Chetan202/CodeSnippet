@@ -10,28 +10,27 @@ https://github.com/user-attachments/assets/434a3a48-9698-43be-a564-f3b0393d1b69
 
 ![image](https://github.com/user-attachments/assets/23d53268-3031-4e37-a7d0-b8cb9d983d19)
 
-Admin Home page
+# Admin Home page
 
 ![FireShot Webpage Capture 019 - 'CodeHub - Home' - localhost](https://github.com/user-attachments/assets/cd90731e-0b41-4868-a0d7-84e7502e94c1)
 
-Normal User Home page
+# Normal User Home page
 
 ![image](https://github.com/user-attachments/assets/cf848c3e-1ac5-4604-a169-f52e0e065522)
 
-Search snippet Functionality
+# Search snippet Functionality
 ![image](https://github.com/user-attachments/assets/e0b960d7-67d0-4b15-b88e-21bbf1319e17)
 
-Create Snippet Page
+# Create Snippet Page
 ![image](https://github.com/user-attachments/assets/5925e6b4-f52c-45f2-a19d-51884f25f72f)
 
-Edit Snippet Page
+# Edit Snippet Page
 ![image](https://github.com/user-attachments/assets/b3730ed1-5911-44c5-9e7c-936f7c043183)
 
-Detail Snippet Page
+# Detail Snippet Page
 ![image](https://github.com/user-attachments/assets/aebff188-8d71-43cc-9060-ec3cec195753)
 
-
-Notification
+# Notification
 
 ![image](https://github.com/user-attachments/assets/f7ab560f-ee2b-473b-a764-6060572f47c6)
 ![image](https://github.com/user-attachments/assets/b224c506-7a46-432b-8acf-8391f487c3c9)
