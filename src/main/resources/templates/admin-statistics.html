@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeHub - Admin Statistics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+        
+        /* Glassmorphism effect for the navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 0.6rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        /* Colorful gradient background behind the navbar */
+        body:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(45deg, #FF5722, #FF9800, #FFC107);
+            z-index: -1;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .navbar-brand {
+            color: #FF5722;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, #FF5722, #FF9800);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            color: #FF9800;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .admin-title {
+            color: #FF5722;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .admin-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, #FF5722, #FF9800);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/home}">
+                <i class="fas fa-code me-2"></i> CodeHub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/home}">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container mt-5">
+        <h1 class="admin-title">Admin Dashboard <i class="fas fa-lock-open ms-2"></i></h1>
+        
+        <div class="row">
+            <!-- Total Users Card -->
+            <div class="col-md-4">
+                <div class="card text-center p-4">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-value" th:text="${totalUsers}">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+            </div>
+            
+            <!-- Verified Users Card -->
+            <div class="col-md-4">
+                <div class="card text-center p-4">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-value" th:text="${verifiedUsers}">0</div>
+                    <div class="stat-label">Verified Users</div>
+                </div>
+            </div>
+            
+            <!-- Total Snippets Card -->
+            <div class="col-md-4">
+                <div class="card text-center p-4">
+                    <div class="stat-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-value" th:text="${totalSnippets}">0</div>
+                    <div class="stat-label">Total Snippets</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle me-2"></i> Admin Information
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Admin Email:</strong> chetanjha888@gmail.com</p>
+                <p class="mb-0"><strong>Note:</strong> Only the user with this email address has admin privileges in CodeHub.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart for Daily Views -->
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-line me-2"></i> Daily Unique User Views
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">This chart shows the number of unique users who viewed the website each day. Each user is counted only once per day regardless of how many times they visit.</p>
+                <div class="d-flex justify-content-end mb-2">
+                    <button id="resetZoomButton" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-undo me-1"></i> Reset View
+                    </button>
+                </div>
+                <div style="height: 400px;">
+                    <canvas id="viewsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+    
+    <script th:inline="javascript">
+        // Get data from Thymeleaf model
+        const viewDates = /*[[${viewDates}]]*/ [];
+        const viewCounts = /*[[${viewCounts}]]*/ [];
+        
+        // Create the chart when document is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('viewsChart').getContext('2d');
+            let chartInstance;
+            
+            // Add reset zoom button event listener
+            document.getElementById('resetZoomButton').addEventListener('click', function() {
+                if (chartInstance) {
+                    chartInstance.resetZoom();
+                }
+            });
+            
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: viewDates,
+                    datasets: [{
+                        label: 'Unique Daily Views',
+                        data: viewCounts,
+                        backgroundColor: 'rgba(255, 87, 34, 0.2)',
+                        borderColor: 'rgba(255, 87, 34, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(255, 87, 34, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Daily Unique User Views (Last 14 Days)',
+                            font: {
+                                size: 16,
+                                family: 'Poppins'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            },
+                            color: '#444'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(50, 50, 50, 0.9)',
+                            titleFont: {
+                                size: 14,
+                                family: 'Poppins'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                family: 'Poppins'
+                            },
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + ' users';
+                                }
+                            }
+                        },
+                        zoom: {
+                            pan: {
+                                enabled: true,
+                                mode: 'x',
+                                modifierKey: 'ctrl',
+                                onPanStart: function(event) {
+                                    // Change cursor to grabbing style when panning
+                                    document.getElementById('viewsChart').style.cursor = 'grabbing';
+                                },
+                                onPanComplete: function(event) {
+                                    // Change cursor back to default after panning
+                                    document.getElementById('viewsChart').style.cursor = 'default';
+                                }
+                            },
+                            zoom: {
+                                wheel: {
+                                    enabled: true,
+                                },
+                                pinch: {
+                                    enabled: true
+                                },
+                                mode: 'x',
+                                drag: {
+                                    enabled: true,
+                                    backgroundColor: 'rgba(255, 87, 34, 0.2)',
+                                    borderColor: 'rgba(255, 87, 34, 1)',
+                                    borderWidth: 1
+                                },
+                                onZoomStart: function(event) {
+                                    // Change cursor to zoom-in style when starting zoom
+                                    document.getElementById('viewsChart').style.cursor = 'zoom-in';
+                                },
+                                onZoomComplete: function(event) {
+                                    // Change cursor back to default after zooming
+                                    document.getElementById('viewsChart').style.cursor = 'default';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date',
+                                color: '#666',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Unique Users',
+                                color: '#666',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 12
+                                }
+                            },
+                            ticks: {
+                                // Force y-axis to show only integer values
+                                stepSize: 1,
+                                callback: function(value) {
+                                    if (Math.floor(value) === value) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

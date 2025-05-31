@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - CodeHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .code-snippet-logo {
+            color: gold;  /* Gold color */
+            font-weight: 700;  /* Bold */
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);  /* Subtle text shadow */
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #FF5722, #FF9800, #FFC107);  /* Orange, darker orange, yellow */
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating shapes in background */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+        
+        body::before {
+            top: -150px;
+            right: -150px;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        body::after {
+            bottom: -150px;
+            left: -150px;
+            animation: float 18s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(40px, 40px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        .form-container {
+            margin-top: 3rem;
+  margin-bottom: 3rem;
+            width: 420px;
+            padding: 45px 35px;
+            /* margin: 30px auto; */
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 35px rgba(31, 38, 135, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(60deg, rgba(255, 87, 34, 0.1), rgba(255, 152, 0, 0.1), rgba(255, 193, 7, 0.1));
+            z-index: -1;
+            animation: shimmer 4s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-30%); }
+            100% { transform: translateX(30%); }
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        h2 {
+            font-size: 2.2em;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(45deg, #FF5722, #FF9800, #FFC107);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: textShine 3s linear infinite;
+        }
+        
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            opacity: 0.85;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 20px rgba(255, 87, 34, 0.3);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #FF5722, #FF9800);
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        button:hover::after {
+            left: 100%;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .form-footer a {
+            color: #f0f0ff;
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.3);
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            background-color: rgba(255, 77, 77, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .field-error {
+            color: #ff4d4d;
+            font-size: 0.85em;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        input.error {
+            border: 1px solid rgba(255, 77, 77, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.2);
+        }
+        
+        /* Improve accessibility - focus states */
+        a:focus, button:focus, input:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+
+    <div th:if="${param.success}">
+        <div class="success-message">
+            <p>Registration Successful!</p>
+        </div>
+    </div>
+
+    <div class="text-center mb-4">
+        <span class="code-snippet-logo">Snippet</span>
+    </div>
+    
+    <div class="title-container">
+        <h2>Sign Up</h2>
+    </div>
+    <form th:action="@{/register}" th:object="${user}" method="post" id="registrationForm">
+        <label for="email">Email</label>
+        <input th:field="*{email}" type="email" id="email" name="email" placeholder="you@example.com" required aria-describedby="emailError" autocomplete="email">
+        <div id="emailError" class="field-error" role="alert">This email is already registered</div>
+
+        <label for="username">Username</label>
+        <input th:field="*{username}" type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username">
+
+        <label for="password">Password</label>
+        <input th:field="*{password}" type="password" id="password" name="password" placeholder="Create a password" required autocomplete="new-password">
+
+        <div th:if="${Userexist}" class="error-message">
+            <p>Username is taken, please try another.</p>
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+    <!-- Success message for email resend -->
+    <div th:if="${param.resent}">
+        <div class="success-message">
+            <p>Verification email resent! Check your inbox.</p>
+        </div>
+    </div>
+
+    <!-- Error for existing email -->
+    <div th:if="${emailExists}">
+        <div class="error-message">
+            <p>Email already registered. Please login instead.</p>
+        </div>
+    </div>
+    <div class="form-footer">
+        Already have an account? <a th:href="@{/login}">Log in</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+        const form = document.getElementById('registrationForm');
+        let emailTimeout;
+        
+        // Email validation - check for uniqueness
+        emailInput.addEventListener('input', function() {
+            const email = this.value.trim();
+            
+            // Clear previous timeout
+            clearTimeout(emailTimeout);
+            
+            // Hide error message when typing
+            emailError.style.display = 'none';
+            emailInput.classList.remove('error');
+            
+            // Only check if valid email format
+            if (email && email.includes('@') && email.includes('.')) {
+                // Set a delay to avoid too many requests
+                emailTimeout = setTimeout(function() {
+                    // Create fetch request to check email
+                    fetch(`/check-email?email=${encodeURIComponent(email)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                emailError.style.display = 'block';
+                                emailInput.classList.add('error');
+                            }
+                        })
+                        .catch(error => console.error('Error checking email:', error));
+                }, 500);
+            }
+        });
+        
+        // Form submission validation
+        form.addEventListener('submit', function(event) {
+            // If error is visible, prevent form submission
+            if (emailError.style.display === 'block') {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+</body>
+</html>

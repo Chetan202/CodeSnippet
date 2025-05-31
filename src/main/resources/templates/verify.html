@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Verification</title>
+  <style>
+    /* Reuse styles from login/register pages */
+    body { background: linear-gradient(135deg, #6b73ff, #000dff); }
+    .message-box {
+        width: 500px;
+        padding: 40px;
+        margin: 100px auto;
+        background: rgba(255,255,255,0.1);
+        border-radius: 16px;
+        text-align: center;
+        color: white;
+    }
+    .success { color: #90EE90; }
+    .error { color: #FF6B6B; }
+  </style>
+</head>
+<body>
+<div class="message-box">
+  <div th:if="${verified}" class="success">
+    <h2>🎉 Verification Successful!</h2>
+    <p>You can now <a th:href="@{/login}">login</a></p>
+  </div>
+
+  <div th:if="${invalid}" class="error">
+    <h2>⚠️ Verification Failed</h2>
+    <p>Invalid or expired token.
+      <a th:href="@{/register}">Register again</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

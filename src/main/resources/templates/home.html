@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeHub - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+        
+        /* Glassmorphism effect for the navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.15);  /* Transparent white background */
+            backdrop-filter: blur(10px);  /* Blur effect */
+            -webkit-backdrop-filter: blur(10px);  /* For Safari */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);  /* Subtle shadow */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);  /* Subtle border */
+            padding: 0.6rem 1rem;  /* Reduced vertical padding */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .navbar-toggler:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+        }
+        
+        .navbar-dark .navbar-nav .nav-item {
+            display: flex;
+            align-items: stretch;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: #FF9800;  /* Orange */
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff;  /* White on hover */
+            transform: translateY(-2px);
+        }
+        
+        /* Logout link styling */
+        .navbar-dark .navbar-nav .nav-link.logout-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link.logout-link:hover {
+            color: #FF3547 !important;  /* Red color */
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #FF5722, #FFC107);
+            transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        
+        .navbar-dark .navbar-nav .nav-link.logout-link:after {
+            background: linear-gradient(45deg, #FF3547, #FF5252);  /* Red gradient */
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        /* Text animation effect */
+        .navbar-dark .navbar-nav .nav-link span {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover span {
+            transform: scale(1.08);
+        }
+        
+        /* Letter spacing animation */
+        .navbar-dark .navbar-nav .nav-link {
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease, letter-spacing 0.3s ease;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover {
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Colorful gradient background behind the navbar */
+        body:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;  /* Further reduced height of the gradient background */
+            background: linear-gradient(45deg, #FF5722, #FF9800, #FFC107);  /* Orange, darker orange, yellow */
+            z-index: -1;
+            border-radius: 0 0 20px 20px;  /* Rounded bottom corners */
+        }
+        
+        .navbar-brand {
+            font-weight: 700;  /* Bold */
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);  /* Subtle text shadow */
+        }
+        
+        .code-snippet-logo {
+            color: gold;  /* Gold color */
+            font-weight: 700;  /* Bold */
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);  /* Subtle text shadow */
+            letter-spacing: 0.5px;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #FF5722, #FF9800);  /* Orange gradient */
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #FF9800, #FFC107);  /* Lighter orange to yellow gradient */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: linear-gradient(45deg, #FF5722, #FF9800);
+            color: white;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            padding: 0.8rem 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(255, 87, 34, 0.15);
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            z-index: 1;
+        }
+        
+        .card-header > div {
+            position: relative;
+            z-index: 2;
+        }
+        .code-preview {
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .code-preview::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, #fff);
+        }
+        .language-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 500;
+            margin-left: 8px;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        #add-snippet-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FF5722, #FF9800);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        #add-snippet-fab:hover {
+            transform: scale(1.1) rotate(8deg);
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+            box-shadow: 0 12px 30px rgba(255, 152, 0, 0.5);
+        }
+        #add-snippet-fab i {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+        }
+        
+        /* Typing Animation Styles */
+        .typing-animation-container {
+            margin-top: 2rem;
+            position: relative;
+        }
+        
+        .typing-prefix {
+            color: #333;
+            font-weight: 300;
+        }
+        
+        .typing-animation {
+            background: linear-gradient(45deg, #FF5722, #FF9800, #FFC107);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s linear infinite;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .typing-animation::after {
+            content: '|';
+            position: absolute;
+            right: -8px;
+            color: #FF5722;
+            -webkit-text-fill-color: #FF5722;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+        
+        /* Toast notifications */
+        /* Search styles */
+        .search-container {
+            position: relative;
+        }
+        
+        .search-box {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 350px;
+        }
+        
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            width: 250px;
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: 2px solid #FF9800;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-input:focus {
+            width: 300px;
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.3);
+            outline: none;
+            border-color: #FFC107;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .btn-search {
+            background: transparent;
+            border: none;
+            position: absolute;
+            right: 12px;
+            color: #FF9800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-search:hover {
+            color: #FFC107;
+            transform: scale(1.1);
+        }
+        
+        /* Pagination styles */
+        .pagination-container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .pagination .page-link {
+            color: #FF9800;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination .page-link:hover {
+            color: #fff;
+            background-color: #FF9800;
+            border-color: #FF9800;
+            transform: translateY(-2px);
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #FF9800;
+            border-color: #FF9800;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.5);
+        }
+        
+        .pagination .page-item.disabled .page-link {
+            color: #666;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-color: #333;
+        }
+        
+        /* Toast styles */
+        .toast {
+            font-size: 15px;
+            font-weight: 500;
+            min-width: 300px;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-bottom: 15px;
+            opacity: 0.95;
+            transform: translateY(100px);
+            animation: toastIn 0.5s forwards;
+        }
+        
+        @keyframes toastIn {
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .toast-body {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toast-body::before {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        #snippet-toast .toast-body::before {
+            content: '\f00c';  /* check icon */
+        }
+        
+        #delete-toast .toast-body::before {
+            content: '\f1f8';  /* trash icon */
+        }
+        
+        #update-toast .toast-body::before {
+            content: '\f044';  /* edit icon */
+        }
+        
+        #star-toast .toast-body::before {
+            content: '\f005';  /* star icon */
+        }
+        
+        .action-icons i {
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+        }
+        
+        .action-icons i:hover {
+            transform: scale(1.2);
+        }
+        
+        .action-icons .fa-star.text-warning {
+            color: #FFC107 !important;
+            filter: drop-shadow(0 0 3px rgba(255, 193, 7, 0.5));
+        }
+        
+        .action-icons .fa-edit.text-primary {
+            color: #FF9800 !important;
+        }
+        
+        .action-icons .fa-trash.text-danger {
+            color: #FF3547 !important;
+        }
+        
+        /* Search box styles */
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 3px 15px rgba(255, 87, 34, 0.1);
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 5px 20px rgba(255, 87, 34, 0.2);
+        }
+        
+        .search-suggestions {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 5px;
+            width: 350px;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        .search-suggestions.active {
+            display: block !important;
+            opacity: 1;
+        }
+        
+        .suggestion-item {
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .suggestion-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #FF9800;
+        }
+        
+        .suggestion-language {
+            display: inline-block;
+            font-size: 12px;
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+        
+        .suggestion-preview {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #FF9800;
+            white-space: pre-wrap;
+            overflow: hidden;
+            color: #333;
+            max-height: 80px;
+        }
+        
+        .highlight-match {
+            background-color: rgba(255, 152, 0, 0.2);
+            font-weight: bold;
+        }
+        
+        .searching-indicator {
+            padding: 15px;
+            text-align: center;
+            color: #2196F3;
+            font-size: 14px;
+        }
+        
+        .searching-indicator i {
+            margin-right: 8px;
+        }
+        
+        .no-results-message {
+            padding: 15px;
+            text-align: center;
+            color: #FF9800;
+            font-size: 14px;
+        }
+        
+        .no-results-message i {
+            margin-right: 8px;
+        }
+        
+        .error-message {
+            padding: 15px;
+            text-align: center;
+            color: #F44336;
+            font-size: 14px;
+        }
+        
+        .error-message i {
+            margin-right: 8px;
+        }
+        
+        .suggestion-item.selected {
+            background-color: #f0f8ff;
+            border-left: 3px solid #2196F3;
+        }
+        
+        .search-status {
+            position: absolute;
+            right: 45px;
+            font-size: 12px;
+            color: #666;
+            display: none;
+        }
+        
+        .search-status-typing, .search-status-results {
+            display: none;
+        }
+        
+        .search-status.typing .search-status-typing {
+            display: inline;
+            color: #FF9800;
+        }
+        
+        .search-status.searching .search-status-results {
+            display: inline;
+            color: #2196F3;
+        }
+        
+        .recent-searches {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 5px;
+            z-index: 999;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .recent-searches.active {
+            display: block;
+        }
+        
+        .recent-searches-header {
+            padding: 10px 15px;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+            background-color: #f8f9fa;
+        }
+        
+        .recent-search-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .recent-search-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .recent-search-item i {
+            color: #aaa;
+            font-size: 12px;
+        }
+        
+        .recent-search-item:hover i {
+            color: #FF9800;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #FF5722;
+            opacity: 0.8;
+        }
+        
+        .search-input:focus + .search-icon {
+            color: #FF9800;
+        }
+        
+        /* Welcome container styles */
+        .welcome-container {
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            height: 100%;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card i {
+            color: #FF9800;
+        }
+        
+        @media (max-width: 768px) {
+            .search-container {
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .d-flex.justify-content-between.align-items-center {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/home}">
+                <span class="code-snippet-logo">Snippet</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" sec:authorize="isAuthenticated">
+                        <span class="nav-link text-red" th:if="${user}">Welcome, <span th:text="${user.username}"></span></span>
+                    </li>
+                    <!-- Statistics icon visible only to admin users -->
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/statistics}">
+                            <i class="fas fa-chart-bar me-1"></i> <span>Statistics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout-link" th:href="@{/logout}" sec:authorize="isAuthenticated"><span>Logout</span></a>
+                        <a class="nav-link" th:href="@{/login}" sec:authorize="!isAuthenticated"><span>Login</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast notifications -->
+    <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 11">
+        <!-- Create toast -->
+        <div id="snippet-toast" class="toast align-items-center text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Snippet created successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        
+        <!-- Delete toast -->
+        <div id="delete-toast" class="toast align-items-center text-white bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Snippet deleted successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        
+        <!-- Update toast -->
+        <div id="update-toast" class="toast align-items-center text-white bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Snippet updated successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        
+        <!-- Star toast -->
+        <div id="star-toast" class="toast align-items-center text-white bg-warning" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="star-toast-message">
+                    Snippet starred successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="container mt-4">
+        <!-- Hidden inputs for flash attributes -->
+        <input type="hidden" id="snippetCreated" th:value="${snippetCreated}" th:if="${snippetCreated}">
+        <input type="hidden" id="snippetDeleted" th:value="${snippetDeleted}" th:if="${snippetDeleted}">
+        <input type="hidden" id="snippetUpdated" th:value="${snippetUpdated}" th:if="${snippetUpdated}">
+        <input type="hidden" id="snippetStarred" th:value="${snippetStarred}" th:if="${snippetStarred != null}">
+        
+        <!-- Typing Animation -->
+        <div class="typing-animation-container text-center mb-5 mt-3">
+            <h1 class="display-4">
+                <span class="typing-prefix">Welcome to </span>
+                <span class="typing-animation" id="typing-animation"></span>
+            </h1>
+            <p class="lead text-muted">Share, store, and discover code in your favorite languages</p>
+        </div>
+        
+        <!-- Welcome message for unauthenticated users -->
+        <div class="welcome-container animate__animated animate__fadeIn" sec:authorize="!isAuthenticated()">
+            <div class="card shadow-lg border-0 mb-5">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+                        <h2 class="card-title">Secure Code Sharing</h2>
+                        <p class="card-text lead">CodeHub provides a secure environment where you can store and manage your code snippets.</p>
+                    </div>
+                    
+                    <!-- Error message if present -->
+                    <div class="alert alert-danger" th:if="${errorMessage != null}">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span th:text="${errorMessage}">Error message</span>
+                    </div>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="feature-card p-3 text-center">
+                                <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
+                                <h5>Private Access</h5>
+                                <p>Your snippets are only visible to you after logging in</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card p-3 text-center">
+                                <i class="fas fa-search fa-2x text-primary mb-3"></i>
+                                <h5>Easy Search</h5>
+                                <p>Quickly find your snippets with our powerful search</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card p-3 text-center">
+                                <i class="fas fa-code fa-2x text-primary mb-3"></i>
+                                <h5>Syntax Highlighting</h5>
+                                <p>Beautiful code display for all popular languages</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="/login" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Log In
+                        </a>
+                        <a href="/register" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4" sec:authorize="isAuthenticated()">
+            <h2>Code Snippets</h2>
+            <div class="search-container">
+                <form id="search-form" th:action="@{/home}" method="get" class="d-flex">
+                    <div class="search-box">
+                        <div class="search-input-wrapper">
+                            <input type="text" id="search-snippets" name="search" class="search-input" placeholder="Search snippets..." autocomplete="off" th:value="${searchTerm}" aria-label="Search snippets" title="Start typing to see suggestions">
+                            <div class="search-status">
+                                <span class="search-status-typing">Typing...</span>
+                                <span class="search-status-results">Finding results...</span>
+                            </div>
+                            <button type="submit" class="btn-search" aria-label="Search">
+                                <i class="fas fa-search search-icon"></i>
+                            </button>
+                        </div>
+                        <div id="search-suggestions" class="search-suggestions" role="listbox" aria-label="Search suggestions"></div>
+                        <div id="recent-searches" class="recent-searches">
+                            <div class="recent-searches-header">Recent Searches</div>
+                            <div id="recent-searches-list" class="recent-searches-list"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="page" value="0" id="page-input">
+                </form>
+            </div>
+        </div>
+        
+        <!-- No snippets message -->
+        <div class="alert alert-info" th:if="${snippets == null || snippets.isEmpty()}" th:classappend="${searchTerm != null ? 'd-none' : ''}" sec:authorize="isAuthenticated()">
+            <p>No code snippets found. Create your first snippet by clicking the + button.</p>
+        </div>
+        
+        <!-- No search results message -->
+        <div class="alert alert-warning" th:if="${searchTerm != null && (snippets == null || snippets.isEmpty())}" sec:authorize="isAuthenticated()">
+            <p>No snippets match your search "<span th:text="${searchTerm}"></span>". Try a different keyword.</p>
+        </div>
+        
+        <!-- Snippets grid -->
+        <div class="row" id="snippets-container" sec:authorize="isAuthenticated()">
+            <div class="col-md-6 col-lg-4 mb-4" th:each="snippet : ${snippets}">
+                <div class="card animate__animated animate__fadeIn">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <span th:text="${snippet.title}">Snippet Title</span>
+                            <span class="language-tag" th:text="${snippet.language}">JavaScript</span>
+                        </div>
+                        <div class="action-icons" th:if="${snippet.user.username == #authentication.name}">
+                            <!-- Star/Unstar toggle -->
+                            <form th:action="@{/snippets/{id}/star(id=${snippet.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-link p-0 me-2" title="Star/Unstar" aria-label="Star/Unstar">
+                                    <i th:classappend="${snippet.starred ? 'fas fa-star text-warning' : 'far fa-star text-white'}"></i>
+                                </button>
+                            </form>
+                            
+                            <!-- Edit link -->
+                            <a th:href="@{/snippets/{id}/edit(id=${snippet.id})}" class="btn btn-sm btn-link p-0 me-2" title="Edit" aria-label="Edit">
+                                <i class="fas fa-edit text-primary"></i>
+                            </a>
+                            
+                            <!-- Delete form -->
+                            <form th:action="@{/snippets/{id}/delete(id=${snippet.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this snippet?');">
+                                <button type="submit" class="btn btn-sm btn-link p-0" title="Delete" aria-label="Delete">
+                                    <i class="fas fa-trash text-danger"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-preview">
+                            <pre><code th:class="'language-' + ${snippet.language.toLowerCase()}" th:text="${snippet.code}">// Code preview here</code></pre>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted" th:text="'Created by ' + ${snippet.user.username}">Created by username</small>
+                            <a th:href="@{/snippets/{id}(id=${snippet.id})}" class="btn btn-sm btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination - only shown to authenticated users -->
+        <div class="pagination-container" th:if="${totalPages > 0}" sec:authorize="isAuthenticated()">
+            <nav aria-label="Snippet pagination">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous button -->
+                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/home(page=${currentPage - 1}, size=10, search=${searchTerm})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Page numbers -->
+                    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" 
+                        th:classappend="${pageNumber == currentPage ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/home(page=${pageNumber}, size=10, search=${searchTerm})}" 
+                           th:text="${pageNumber + 1}">1</a>
+                    </li>
+                    
+                    <!-- Next button -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/home(page=${currentPage + 1}, size=10, search=${searchTerm})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="text-center text-muted mt-2">
+                <small>Showing <span th:text="${snippets.size()}"></span> of <span th:text="${totalItems}"></span> snippets</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button for adding new snippets - only shown to authenticated users -->
+    <a th:href="@{/snippets/create}" id="add-snippet-fab" class="shadow" title="Add new snippet" sec:authorize="isAuthenticated()">
+        <i class="fas fa-code"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize typing animation
+            const typedElement = document.getElementById('typing-animation');
+            if (typedElement) {
+                const typed = new Typed('#typing-animation', {
+                    strings: [
+                        'Code Snippet', // English
+                        'কোড স্নিপেট', // Assamese/Bengali
+                        'कोड स्निपेट', // Hindi/Marathi
+                        'કોડ સ્નિપેટ', // Gujarati
+                        'ಕೋಡ್ ಸ್ನಿಪೆಟ್', // Kannada
+                        'കോഡ് സ്നിപ്പറ്റ്', // Malayalam
+                        'कोड स्निप्पेट', // Nepali
+                        'ਕੋਡ ਸਨਿੱਪਟ', // Punjabi
+                        'குறியீடு துணுக்கு', // Tamil
+                        'కోడ్ స్నిప్పెట్', // Telugu
+                        'कोड स्निपेट्स', // Sanskrit-based languages
+                        'کوڈ سنپٹ', // Kashmiri/Sindhi (Urdu script)
+                    ],
+                    typeSpeed: 50,
+                    backSpeed: 30,
+                    backDelay: 2000,
+                    startDelay: 500,
+                    loop: true,
+                    showCursor: false,
+                });
+            }
+            
+            // Initialize syntax highlighting
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+            
+            // Check for various notifications from flash attributes
+            const showToast = (toastId, delay = 300) => {
+                setTimeout(() => {
+                    const toastElement = document.getElementById(toastId);
+                    const toast = new bootstrap.Toast(toastElement, {
+                        animation: true,
+                        autohide: true,
+                        delay: 4000 // Show for 4 seconds
+                    });
+                    toast.show();
+                }, delay);
+            };
+            
+            // New snippet created - check both URL params and flash attributes
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('snippetCreated') === 'true') {
+                showToast('snippet-toast');
+                // Clean URL without reloading
+                history.pushState({}, document.title, window.location.pathname);
+                // Highlight the newest snippet with animation
+                const firstSnippet = document.querySelector('#snippets-container .col-md-6:first-child .card');
+                if (firstSnippet) {
+                    firstSnippet.classList.add('animate__animated', 'animate__pulse');
+                }
+            } else if (document.getElementById('snippetCreated') && document.getElementById('snippetCreated').value === 'true') {
+                showToast('snippet-toast');
+                // Highlight the newest snippet with animation
+                const firstSnippet = document.querySelector('#snippets-container .col-md-6:first-child .card');
+                if (firstSnippet) {
+                    firstSnippet.classList.add('animate__animated', 'animate__pulse');
+                }
+            }
+            
+            // Snippet deleted
+            if (document.getElementById('snippetDeleted') && document.getElementById('snippetDeleted').value === 'true') {
+                showToast('delete-toast');
+            }
+            
+            // Snippet updated
+            if (document.getElementById('snippetUpdated') && document.getElementById('snippetUpdated').value === 'true') {
+                showToast('update-toast');
+            }
+            
+            // Snippet starred/unstarred
+            if (document.getElementById('snippetStarred')) {
+                const starredValue = document.getElementById('snippetStarred').value;
+                if (starredValue === 'true' || starredValue === 'false') {
+                    const starToastMessage = document.getElementById('star-toast-message');
+                    starToastMessage.textContent = starredValue === 'true' ? 'Snippet starred successfully!' : 'Snippet unstarred successfully!';
+                    showToast('star-toast');
+                }
+            }
+            hljs.highlightAll();
+            
+            // Search form handling
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.getElementById('search-snippets');
+            const pageInput = document.getElementById('page-input');
+            
+            if (searchForm && searchInput) {
+                // Reset page to 0 when search term changes
+                searchInput.addEventListener('input', function() {
+                    if (pageInput) {
+                        pageInput.value = '0';
+                    }
+                });
+                
+                // Clear search when input is empty and user presses Enter
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && this.value.trim() === '') {
+                        e.preventDefault();
+                        window.location.href = '/home';
+                    }
+                });
+                
+                // Handle form submission
+                searchForm.addEventListener('submit', function(e) {
+                    const searchValue = searchInput.value.trim();
+                    
+                    if (searchValue === '') {
+                        // If we're already on a search results page and trying to clear the search
+                        if (window.location.href.includes('search=')) {
+                            e.preventDefault();
+                            window.location.href = '/home';
+                        } else {
+                            // Prevent empty searches
+                            e.preventDefault();
+                        }
+                    } else {
+                        // Add loading indicator to search button
+                        const searchButton = this.querySelector('.btn-search');
+                        if (searchButton) {
+                            searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                        }
+                    }
+                });
+            }
+            
+            // Enhance pagination links with loading indicator
+            const paginationLinks = document.querySelectorAll('.pagination .page-link');
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Add loading state
+                    this.innerHTML += ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                    this.classList.add('disabled');
+                });
+            });
+            
+            // Highlight search terms in code snippets
+            const highlightSearchTerm = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchTerm = urlParams.get('search');
+                
+                if (searchTerm && searchTerm.trim() !== '') {
+                    const codeElements = document.querySelectorAll('.code-preview code');
+                    const titleElements = document.querySelectorAll('.card-header span:first-child');
+                    
+                    // Function to highlight text without breaking HTML
+                    const highlightText = (element, term) => {
+                        const innerHTML = element.innerHTML;
+                        const index = innerHTML.toLowerCase().indexOf(term.toLowerCase());
+                        if (index >= 0) {
+                            const highlighted = innerHTML.substring(0, index) + 
+                                '<mark class="search-highlight">' + 
+                                innerHTML.substring(index, index + term.length) + 
+                                '</mark>' + 
+                                innerHTML.substring(index + term.length);
+                            element.innerHTML = highlighted;
+                        }
+                    };
+                    
+                    // Highlight in titles
+                    titleElements.forEach(element => {
+                        highlightText(element, searchTerm);
+                    });
+                    
+                    // Add highlight style
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .search-highlight {
+                            background-color: rgba(255, 152, 0, 0.3);
+                            border-radius: 2px;
+                            padding: 2px;
+                            color: #fff;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            };
+            
+            // Call highlight function when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                highlightSearchTerm();
+                
+                // Clear search field on page refresh
+                const searchInput = document.getElementById('search-snippets');
+                if (searchInput) {
+                    // Only clear if it's not from a search result page (has no searchTerm parameter)
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (!urlParams.has('search')) {
+                        searchInput.value = '';
+                    }
+                }
+                
+                // Setup real-time search suggestions
+                setupSearchSuggestions();
+            });
+            
+            // Function to handle real-time search suggestions with rich previews
+            function setupSearchSuggestions() {
+                const searchInput = document.getElementById('search-snippets');
+                const suggestionsContainer = document.getElementById('search-suggestions');
+                const searchStatus = document.querySelector('.search-status');
+                const recentSearchesContainer = document.getElementById('recent-searches');
+                const recentSearchesList = document.getElementById('recent-searches-list');
+                let debounceTimer;
+                let searchTimer;
+                let selectedIndex = -1;
+                let recentSearches = [];
+                
+                if (!searchInput || !suggestionsContainer) return;
+                
+                // Load recent searches from localStorage
+                function loadRecentSearches() {
+                    try {
+                        const saved = localStorage.getItem('recentSearches');
+                        if (saved) {
+                            recentSearches = JSON.parse(saved);
+                        }
+                    } catch (e) {
+                        console.error('Error loading recent searches:', e);
+                        recentSearches = [];
+                    }
+                }
+                
+                // Save recent searches to localStorage
+                function saveRecentSearches() {
+                    try {
+                        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+                    } catch (e) {
+                        console.error('Error saving recent searches:', e);
+                    }
+                }
+                
+                // Add a search term to recent searches
+                function addToRecentSearches(term) {
+                    if (!term || term.trim() === '') return;
+                    
+                    // Remove if already exists
+                    recentSearches = recentSearches.filter(s => s.toLowerCase() !== term.toLowerCase());
+                    
+                    // Add to beginning
+                    recentSearches.unshift(term);
+                    
+                    // Keep only the last 5 searches
+                    if (recentSearches.length > 5) {
+                        recentSearches = recentSearches.slice(0, 5);
+                    }
+                    
+                    saveRecentSearches();
+                }
+                
+                // Display recent searches
+                function showRecentSearches() {
+                    if (recentSearches.length === 0) return;
+                    
+                    recentSearchesList.innerHTML = '';
+                    
+                    recentSearches.forEach(term => {
+                        const item = document.createElement('div');
+                        item.className = 'recent-search-item';
+                        item.setAttribute('role', 'option');
+                        
+                        const textSpan = document.createElement('span');
+                        textSpan.textContent = term;
+                        item.appendChild(textSpan);
+                        
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-history';
+                        item.appendChild(icon);
+                        
+                        item.addEventListener('click', function() {
+                            searchInput.value = term;
+                            recentSearchesContainer.classList.remove('active');
+                            fetchSuggestions(term);
+                        });
+                        
+                        recentSearchesList.appendChild(item);
+                    });
+                    
+                    recentSearchesContainer.classList.add('active');
+                }
+                
+                // Function to highlight matching text in a string
+                function highlightMatch(text, searchTerm) {
+                    if (!searchTerm || searchTerm.trim() === '') return text;
+                    
+                    const regex = new RegExp(searchTerm.trim(), 'gi');
+                    return text.replace(regex, match => `<span class="highlight-match">${match}</span>`);
+                }
+                
+                // Update search status
+                function updateSearchStatus(status) {
+                    if (!searchStatus) return;
+                    
+                    searchStatus.className = 'search-status';
+                    if (status === 'typing') {
+                        searchStatus.classList.add('typing');
+                        searchStatus.style.display = 'block';
+                    } else if (status === 'searching') {
+                        searchStatus.classList.add('searching');
+                        searchStatus.style.display = 'block';
+                    } else {
+                        searchStatus.style.display = 'none';
+                    }
+                }
+                
+                // Function to fetch suggestions from the server
+                function fetchSuggestions(term) {
+                    if (!term || term.trim().length < 2) {
+                        suggestionsContainer.classList.remove('active');
+                        suggestionsContainer.innerHTML = '';
+                        updateSearchStatus('');
+                        return;
+                    }
+                    
+                    updateSearchStatus('searching');
+                    
+                    // Log for debugging
+                    console.log('Fetching suggestions for:', term);
+                    
+                    // Force the suggestions container to be visible immediately
+                    // This ensures users see that something is happening
+                    suggestionsContainer.style.display = 'block';
+                    suggestionsContainer.innerHTML = '<div class="searching-indicator"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+                    
+                    fetch(`/api/search-suggestions?term=${encodeURIComponent(term.trim())}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Received suggestions:', data);
+                            suggestionsContainer.innerHTML = '';
+                            selectedIndex = -1;
+                            
+                            if (data && data.length > 0) {
+                                data.forEach((snippet, index) => {
+                                    const item = document.createElement('div');
+                                    item.className = 'suggestion-item';
+                                    item.setAttribute('role', 'option');
+                                    item.setAttribute('tabindex', '-1');
+                                    item.setAttribute('data-index', index);
+                                    
+                                    // Create title element with highlighted match
+                                    const titleElement = document.createElement('div');
+                                    titleElement.className = 'suggestion-title';
+                                    titleElement.innerHTML = highlightMatch(snippet.title, term);
+                                    
+                                    // Create language badge
+                                    const languageElement = document.createElement('div');
+                                    languageElement.className = 'suggestion-language';
+                                    languageElement.textContent = snippet.language;
+                                    
+                                    // Create code preview with highlighted match
+                                    const previewElement = document.createElement('div');
+                                    previewElement.className = 'suggestion-preview';
+                                    previewElement.innerHTML = highlightMatch(snippet.codePreview, term);
+                                    
+                                    // Add all elements to the suggestion item
+                                    item.appendChild(titleElement);
+                                    item.appendChild(languageElement);
+                                    item.appendChild(previewElement);
+                                    
+                                    // When a suggestion is clicked, fill the search input and submit the form
+                                    item.addEventListener('click', function() {
+                                        searchInput.value = snippet.title;
+                                        addToRecentSearches(snippet.title);
+                                        document.getElementById('search-form').submit();
+                                    });
+                                    
+                                    suggestionsContainer.appendChild(item);
+                                });
+                                
+                                // Force the suggestions to show
+                                suggestionsContainer.style.display = 'block';
+                                suggestionsContainer.classList.add('active');
+                            } else {
+                                // Show a 'no results' message instead of hiding completely
+                                const noResults = document.createElement('div');
+                                noResults.className = 'no-results-message';
+                                noResults.innerHTML = `<i class="fas fa-info-circle"></i> No snippets found for <strong>${term}</strong>`;
+                                suggestionsContainer.appendChild(noResults);
+                                suggestionsContainer.style.display = 'block';
+                                suggestionsContainer.classList.add('active');
+                            }
+                            
+                            updateSearchStatus('');
+                        })
+                        .catch(error => {
+                            console.error('Error fetching search suggestions:', error);
+                            suggestionsContainer.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Error loading suggestions</div>';
+                            suggestionsContainer.style.display = 'block';
+                            suggestionsContainer.classList.add('active');
+                            updateSearchStatus('');
+                        });
+                }
+                
+                // Handle keyboard navigation
+                searchInput.addEventListener('keydown', function(e) {
+                    const items = suggestionsContainer.querySelectorAll('.suggestion-item');
+                    const isActive = suggestionsContainer.classList.contains('active');
+                    
+                    // Only handle keyboard navigation if suggestions are visible
+                    if (items.length === 0 || !isActive) return;
+                    
+                    // Down arrow
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                        updateSelectedItem(items);
+                        // Ensure the selected item is visible by scrolling if needed
+                        if (selectedIndex >= 0) {
+                            items[selectedIndex].scrollIntoView({ block: 'nearest' });
+                        }
+                    } 
+                    // Up arrow
+                    else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        selectedIndex = Math.max(selectedIndex - 1, -1);
+                        updateSelectedItem(items);
+                        // Ensure the selected item is visible by scrolling if needed
+                        if (selectedIndex >= 0) {
+                            items[selectedIndex].scrollIntoView({ block: 'nearest' });
+                        }
+                    } 
+                    // Enter key
+                    else if (e.key === 'Enter' && selectedIndex >= 0) {
+                        e.preventDefault();
+                        items[selectedIndex].click();
+                    }
+                    // Escape key to close suggestions
+                    else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        suggestionsContainer.classList.remove('active');
+                    }
+                });
+                
+                // Update the selected suggestion
+                function updateSelectedItem(suggestions) {
+                    suggestions.forEach((item, index) => {
+                        if (index === selectedIndex) {
+                            item.classList.add('selected');
+                            item.scrollIntoView({ block: 'nearest' });
+                        } else {
+                            item.classList.remove('selected');
+                        }
+                    });
+                }
+                
+                // Listen for input changes with debounce
+                searchInput.addEventListener('input', function() {
+                    const term = this.value.trim();
+                    
+                    // Hide recent searches when typing
+                    recentSearchesContainer.classList.remove('active');
+                    
+                    // Show typing status
+                    updateSearchStatus('typing');
+                    
+                    // Clear previous timers
+                    clearTimeout(debounceTimer);
+                    clearTimeout(searchTimer);
+                    
+                    // Immediately trigger search if term is long enough
+                    if (term.length >= 2) {
+                        // Short debounce to prevent too many requests
+                        debounceTimer = setTimeout(() => {
+                            fetchSuggestions(term);
+                        }, 100); // Reduced debounce time for faster response
+                    } else {
+                        // Clear suggestions if term is too short
+                        updateSearchStatus('');
+                        suggestionsContainer.classList.remove('active');
+                        suggestionsContainer.innerHTML = '';
+                    }
+                });
+                
+                // Handle focus on search input
+                searchInput.addEventListener('focus', function() {
+                    const term = this.value.trim();
+                    
+                    if (term.length >= 2) {
+                        fetchSuggestions(term);
+                    } else if (term === '') {
+                        // Show recent searches when focused with empty input
+                        showRecentSearches();
+                    }
+                });
+                
+                // Handle form submission
+                document.getElementById('search-form').addEventListener('submit', function(e) {
+                    const term = searchInput.value.trim();
+                    if (term.length >= 2) {
+                        addToRecentSearches(term);
+                    }
+                });
+                
+                // Handle keyboard navigation
+                searchInput.addEventListener('keydown', handleKeyNavigation);
+                
+                // Close suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    const isSearchRelated = searchInput.contains(e.target) || 
+                                          suggestionsContainer.contains(e.target) || 
+                                          recentSearchesContainer.contains(e.target);
+                    
+                    if (!isSearchRelated) {
+                        suggestionsContainer.classList.remove('active');
+                        recentSearchesContainer.classList.remove('active');
+                    }
+                });
+                
+                // Close suggestions when pressing Escape
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        suggestionsContainer.classList.remove('active');
+                        recentSearchesContainer.classList.remove('active');
+                        updateSearchStatus('');
+                        this.blur();
+                    }
+                });
+                
+                // Initialize recent searches
+                loadRecentSearches();
+                
+                // Trigger search immediately if input has value
+                if (searchInput.value.trim().length >= 2) {
+                    fetchSuggestions(searchInput.value);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
