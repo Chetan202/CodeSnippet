@@ -138,4 +138,6 @@ Ensure `java` and `mvn` executables are on your system PATH.
 git clone https://github.com/Chetan202/CodeSnippet.git
 cd CodeSnippet
 
+### Design
+![image](https://github.com/user-attachments/assets/9f68c149-348f-4fab-96d1-c8f3569763fc)
 
