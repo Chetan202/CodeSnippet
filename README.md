@@ -79,7 +79,7 @@ Description: A web-based application to create, store, manage, with role-based a
 
 ## Description
 
-CodeSnippet is a web application that allows developers to create, store, and manage reusable code snippets. It supports role-based dashboards, full-text search, syntax highlighting, and real-time notifications—enabling teams to quickly find and reuse code blocks, track contributions, and collaborate efficiently.
+CodeSnippet is a web application that allows developers to create, store, and manage code snippets. It supports role-based dashboards, full-text search and real-time notifications—enabling user to quickly find and code blocks.
 
 ---
 
@@ -90,12 +90,12 @@ CodeSnippet is a web application that allows developers to create, store, and ma
   - **User Role**: Create, edit, search, and delete personal snippets; view all snippets.
 
 - **Snippet Management**  
-  - Create code snippets with title, description, language, tags, and code content.  
+  - Create code snippets with title, description, programming language, tags, and code content.  
   - Edit or delete snippets you own.  
-  - Detail page showing syntax-highlighted code and metadata.
+  - Detail page showing code and title and other details.
 
 - **Search & Filtering**  
-  - Full-text search across titles, descriptions, and tags.  
+  - Full-text search across titles, descriptions, and code.  
   - Filter snippets by programming language.
 
 - **Dashboards**  
@@ -106,16 +106,9 @@ CodeSnippet is a web application that allows developers to create, store, and ma
   - Alerts for snippet comments, approvals, and admin announcements.  
   - Notification panel accessible from the top-right bell icon.
 
-- **Responsive User Interface**  
-  - Mobile-friendly layout built with Bootstrap (or similar) for consistent experience across devices.
-
-- **Tagging & Organization**  
-  - Assign multiple tags per snippet to categorize and simplify retrieval.
-
 - **Security & Validation**  
   - Server-side input validation and sanitization.  
   - Secure password hashing (bcrypt).  
-  - Session management with auto-logout on inactivity.
 
 ---
 
