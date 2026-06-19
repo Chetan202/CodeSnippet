@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService {
     public String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         user.setVerificationToken(token);
+        user.setVerificationTokenExpiresAt(LocalDateTime.now().plusHours(24));
         userRepository.save(user);
         return token;
     }
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean verifyUser(String token) {
         User user = findByVerificationToken(token);
-        if (user != null) {
+        if (isVerificationTokenValid(user)) {
             // Check if user is already verified
             if (user.isVerified()) {
                 // Token has already been used, return false to indicate token expired
@@ -69,11 +71,20 @@ public class UserServiceImpl implements UserService {
             // Mark user as verified and clear the token
             user.setVerified(true);
             user.setVerificationToken(null); // Clear token after verification
+            user.setVerificationTokenExpiresAt(null);
             userRepository.save(user);
             return true;
         }
         // Token not found
         return false;
+    }
+
+    @Override
+    public boolean isVerificationTokenValid(User user) {
+        return user != null
+                && !user.isVerified()
+                && user.getVerificationTokenExpiresAt() != null
+                && user.getVerificationTokenExpiresAt().isAfter(LocalDateTime.now());
     }
 
     @Override

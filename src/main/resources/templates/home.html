@@ -750,6 +750,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/statistics}"><i class="fas fa-chart-column"></i><span>Statistics</span></a>
+                    </li>
                     <li class="nav-item" sec:authorize="isAuthenticated">
                         <span class="user-label" th:if="${user}">
                             <i class="fas fa-user-circle"></i>

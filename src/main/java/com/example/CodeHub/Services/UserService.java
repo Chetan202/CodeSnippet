@@ -13,6 +13,8 @@ public interface UserService {
     String generateVerificationToken(User user);
     
     boolean verifyUser(String token);
+
+    boolean isVerificationTokenValid(User user);
     
     User findByVerificationToken(String token);
     

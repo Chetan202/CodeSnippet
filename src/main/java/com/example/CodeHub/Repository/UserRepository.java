@@ -5,11 +5,15 @@ import com.example.CodeHub.Dto.UserDto;
 import com.example.CodeHub.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
     User findByEmail(String email); // NEW
     User findByVerificationToken(String verificationToken); // NEW
-    User save(UserDto userDto);
+    List<User> findAllByOrderByCreatedAtDesc();
+    long countByIsVerifiedTrue();
+    long countByIsVerifiedFalse();
 
 }

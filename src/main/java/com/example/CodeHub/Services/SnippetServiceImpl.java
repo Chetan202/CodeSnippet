@@ -37,6 +37,11 @@ public class SnippetServiceImpl implements SnippetService {
     }
 
     @Override
+    public long countSnippets() {
+        return snippetRepository.count();
+    }
+
+    @Override
     public List<Snippet> findSnippetsByUser(User user) {
         return snippetRepository.findByUserOrderByStarredDescCreatedAtDesc(user);
     }

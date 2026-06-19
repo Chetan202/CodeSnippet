@@ -187,6 +187,52 @@ body {
     text-align: center;
 }
 
+.resend-form {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.resend-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #475467;
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.resend-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.resend-row input,
+.resend-row button {
+    min-height: 42px;
+    border-radius: 7px;
+}
+
+.resend-row input {
+    min-width: 0;
+    padding: 0 12px;
+    border: 1px solid #cfd6e4;
+}
+
+.resend-row button {
+    padding: 0 14px;
+    border: 0;
+    color: #fff;
+    background: #0f766e;
+    font-weight: 700;
+}
+
+@media (max-width: 480px) {
+    .resend-row {
+        grid-template-columns: 1fr;
+    }
+}
+
 .auth-footer a {
     color: var(--accent);
     font-weight: 600;
@@ -223,4 +269,3 @@ body {
         margin: 0 auto;
     }
 }
-

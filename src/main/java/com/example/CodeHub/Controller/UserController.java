@@ -2,11 +2,9 @@ package com.example.CodeHub.Controller;
 
 import com.example.CodeHub.Dto.UserDto;
 import com.example.CodeHub.Entity.User;
-import com.example.CodeHub.Repository.UserRepository;
 import com.example.CodeHub.Services.EmailService;
 import com.example.CodeHub.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.Map;
-
-import java.security.Principal;
 
 import java.security.Principal;
 
@@ -81,9 +77,11 @@ public class UserController {
         String token = userService.generateVerificationToken(savedUser);
 
         // Send verification email
-        emailService.sendVerificationEmail(savedUser.getEmail(), token);
+        boolean emailSent = emailService.sendVerificationEmail(savedUser.getEmail(), token);
 
-        return "redirect:/register?success";
+        return emailSent
+                ? "redirect:/register?success"
+                : "redirect:/register?emailDeliveryFailed";
     }
 
     @GetMapping("/check-email")
@@ -103,9 +101,9 @@ public class UserController {
         if (user == null) {
             model.addAttribute("message", "Invalid verification token. The token may have expired or been used already.");
             model.addAttribute("status", "error");
-        } else if (user.isVerified()) {
-            model.addAttribute("message", "This account has already been verified. The verification token has expired.");
-            model.addAttribute("status", "warning");
+        } else if (!userService.isVerificationTokenValid(user)) {
+            model.addAttribute("message", "This verification link has expired. Request a new link from the registration page.");
+            model.addAttribute("status", "error");
         } else {
             // Valid token and user not yet verified, proceed with verification
             boolean verified = userService.verifyUser(token);
@@ -120,6 +118,23 @@ public class UserController {
         }
 
         return "verification";
+    }
+
+    @PostMapping("/resend-verification")
+    public String resendVerification(@RequestParam("email") String email) {
+        User user = userService.findByEmail(email.trim());
+        if (user == null) {
+            return "redirect:/register?resendUnknown";
+        }
+        if (user.isVerified()) {
+            return "redirect:/login?verified";
+        }
+
+        String token = userService.generateVerificationToken(user);
+        boolean sent = emailService.sendVerificationEmail(user.getEmail(), token);
+        return sent
+                ? "redirect:/register?resent"
+                : "redirect:/register?emailDeliveryFailed";
     }
 //    @PostMapping
 //    public ResponseEntity<String> registerSava(@ModelAttribute("user") UserDto userDto, Model model) {

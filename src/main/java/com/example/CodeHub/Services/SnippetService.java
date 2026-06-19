@@ -11,6 +11,7 @@ import java.util.List;
 public interface SnippetService {
     Snippet save(SnippetDto snippetDto, User user);
     List<Snippet> findAllSnippets();
+    long countSnippets();
     List<Snippet> findSnippetsByUser(User user);
     Snippet findById(Long id);
     Snippet update(Long id, SnippetDto snippetDto);

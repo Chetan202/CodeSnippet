@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 
 @Configuration
@@ -34,7 +34,7 @@ public class securityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     // Public access paths - only for registration, login, and verification
-                    registry.requestMatchers("/register", "/login", "/verify", "/check-email").permitAll();
+                    registry.requestMatchers("/register", "/login", "/verify", "/check-email", "/resend-verification").permitAll();
                     
                     // Static resources should be accessible without login
                     registry.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll();
@@ -45,8 +45,9 @@ public class securityConfig {
                     // Restrict home page and snippets to authenticated users only
                     registry.requestMatchers("/home", "/snippets/**", "/api/search-snippets").authenticated();
                     
-                    // Admin paths require ADMIN role
-                    registry.requestMatchers("/admin/**").hasRole("ADMIN");
+                    // Admin access is tied to the owner's authenticated email, not only a mutable role.
+                    registry.requestMatchers("/admin/**").access(new WebExpressionAuthorizationManager(
+                            "hasRole('ADMIN') and authentication.principal.email.equalsIgnoreCase('chetanjha888@gmail.com')"));
                     
                     // All other requests require authentication
                     registry.anyRequest().authenticated();

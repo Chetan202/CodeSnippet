@@ -2,6 +2,7 @@ package com.example.CodeHub.Entity;
 
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -16,10 +17,12 @@ public class User {
     @Column(unique = true)
     private String email;
     private String verificationToken;
+    private LocalDateTime verificationTokenExpiresAt;
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified; // Ensure proper column name mapping
     @Column(name = "role", nullable = false)
     private String role = "USER"; // Default role is USER
+    private LocalDateTime createdAt;
 
     public User() {
 
@@ -30,6 +33,13 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 
     public Long getId() {
@@ -72,6 +82,14 @@ public class User {
         this.verificationToken = verificationToken;
     }
 
+    public LocalDateTime getVerificationTokenExpiresAt() {
+        return verificationTokenExpiresAt;
+    }
+
+    public void setVerificationTokenExpiresAt(LocalDateTime verificationTokenExpiresAt) {
+        this.verificationTokenExpiresAt = verificationTokenExpiresAt;
+    }
+
     public boolean isVerified() {
         return isVerified;
     }
@@ -86,6 +104,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

@@ -31,6 +31,15 @@
             <div class="alert alert-success" th:if="${param.success}">
                 <p>Account created. Check your email for the verification link.</p>
             </div>
+            <div class="alert alert-success" th:if="${param.resent}">
+                <p>A new verification link has been sent. It expires in 24 hours.</p>
+            </div>
+            <div class="alert alert-danger" th:if="${param.emailDeliveryFailed}">
+                <p>Your account was saved, but the email could not be delivered. Check the mail settings and try resending.</p>
+            </div>
+            <div class="alert alert-danger" th:if="${param.resendUnknown}">
+                <p>No account was found for that email address.</p>
+            </div>
             <div class="alert alert-error" th:if="${Userexist}">
                 <p>That username is already taken.</p>
             </div>
@@ -53,6 +62,14 @@
                     <input th:field="*{password}" type="password" id="password" autocomplete="new-password" placeholder="Create a password" minlength="8" required>
                 </div>
                 <button class="primary-button" type="submit">Create account</button>
+            </form>
+
+            <form class="resend-form" th:action="@{/resend-verification}" method="post">
+                <label for="resendEmail">Did not receive the email?</label>
+                <div class="resend-row">
+                    <input id="resendEmail" name="email" type="email" placeholder="Your registered email" required>
+                    <button type="submit">Resend link</button>
+                </div>
             </form>
 
             <p class="auth-footer">Already registered? <a th:href="@{/login}">Log in</a></p>

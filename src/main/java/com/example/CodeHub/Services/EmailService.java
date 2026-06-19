@@ -16,13 +16,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     
-    @Value("${spring.mail.username}")
+    @Value("${app.mail-from:${spring.mail.username}}")
     private String fromEmail;
     
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
-    public void sendVerificationEmail(String toEmail, String token) {
+    public boolean sendVerificationEmail(String toEmail, String token) {
         try {
             logger.info("Preparing to send verification email to: {}", toEmail);
             
@@ -50,6 +50,7 @@ public class EmailService {
             
             mailSender.send(message);
             logger.info("Email successfully sent to: {}", toEmail);
+            return true;
         } catch (MailException e) {
             logger.error("Failed to send email to {}: {}", toEmail, e.getMessage(), e);
             // Log more detailed error information
@@ -57,6 +58,7 @@ public class EmailService {
             if (e.getCause() != null) {
                 logger.error("Root cause: {}", e.getCause().getMessage());
             }
+            return false;
         }
     }
 }
