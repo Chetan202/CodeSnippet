@@ -34,7 +34,7 @@ public class securityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     // Public access paths - only for registration, login, and verification
-                    registry.requestMatchers("/register", "/login", "/verify").permitAll();
+                    registry.requestMatchers("/register", "/login", "/verify", "/check-email").permitAll();
                     
                     // Static resources should be accessible without login
                     registry.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll();

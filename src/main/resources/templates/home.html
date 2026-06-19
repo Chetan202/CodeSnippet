@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <style>
         body {
             background-color: #f8f9fa;
@@ -738,10 +739,11 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg app-navbar">
         <div class="container">
             <a class="navbar-brand" th:href="@{/home}">
-                <span class="code-snippet-logo">Snippet</span>
+                <span class="brand-mark">&lt;/&gt;</span>
+                <span>CodeHub</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -749,17 +751,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item" sec:authorize="isAuthenticated">
-                        <span class="nav-link text-red" th:if="${user}">Welcome, <span th:text="${user.username}"></span></span>
-                    </li>
-                    <!-- Statistics icon visible only to admin users -->
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link" th:href="@{/admin/statistics}">
-                            <i class="fas fa-chart-bar me-1"></i> <span>Statistics</span>
-                        </a>
+                        <span class="user-label" th:if="${user}">
+                            <i class="fas fa-user-circle"></i>
+                            <span th:text="${user.username}"></span>
+                        </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link logout-link" th:href="@{/logout}" sec:authorize="isAuthenticated"><span>Logout</span></a>
-                        <a class="nav-link" th:href="@{/login}" sec:authorize="!isAuthenticated"><span>Login</span></a>
+                        <a class="nav-link logout-link" th:href="@{/logout}" sec:authorize="isAuthenticated"><i class="fas fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+                        <a class="nav-link" th:href="@{/login}" sec:authorize="!isAuthenticated"><i class="fas fa-arrow-right-to-bracket"></i><span>Login</span></a>
                     </li>
                 </ul>
             </div>
