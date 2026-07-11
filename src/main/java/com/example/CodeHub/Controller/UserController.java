@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,6 +136,27 @@ public class UserController {
         return sent
                 ? "redirect:/register?resent"
                 : "redirect:/register?emailDeliveryFailed";
+    }
+
+    @GetMapping("/settings/notifications")
+    public String notificationSettings(Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username);
+        model.addAttribute("user", user);
+        return "notification-settings";
+    }
+
+    @PostMapping("/settings/notifications")
+    public String updateNotificationSettings(@RequestParam(name = "notifyComments", defaultValue = "false") boolean notifyComments,
+                                             @RequestParam(name = "notifyApprovals", defaultValue = "false") boolean notifyApprovals,
+                                             @RequestParam(name = "notifyProductUpdates", defaultValue = "false") boolean notifyProductUpdates) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username);
+        user.setNotifyComments(notifyComments);
+        user.setNotifyApprovals(notifyApprovals);
+        user.setNotifyProductUpdates(notifyProductUpdates);
+        userService.saveExisting(user);
+        return "redirect:/settings/notifications?saved";
     }
 //    @PostMapping
 //    public ResponseEntity<String> registerSava(@ModelAttribute("user") UserDto userDto, Model model) {

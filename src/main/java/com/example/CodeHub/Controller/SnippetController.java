@@ -9,6 +9,8 @@ import com.example.CodeHub.Services.SnippetService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -92,6 +94,8 @@ public class SnippetController {
         }
         
         model.addAttribute("snippet", snippet);
+        model.addAttribute("comments", snippetService.findComments(snippet));
+        model.addAttribute("bookmarked", snippetService.isBookmarked(snippet, currentUser));
         return "view-snippet";
     }
 
@@ -208,6 +212,66 @@ public class SnippetController {
         return "redirect:/home";
     }
 
+    @PostMapping("/snippets/{id}/comments")
+    public String addComment(@PathVariable Long id, @RequestParam("content") String content,
+                             RedirectAttributes redirectAttributes) {
+        User currentUser = currentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        Snippet snippet = snippetService.findById(id);
+        if (snippet == null || (!snippet.isPublicSnippet() && !snippet.getUser().getId().equals(currentUser.getId()))) {
+            return "redirect:/home?error=unauthorized";
+        }
+        snippetService.addComment(id, currentUser, content);
+        redirectAttributes.addFlashAttribute("commentAdded", true);
+        return "redirect:/snippets/" + id;
+    }
+
+    @PostMapping("/snippets/{id}/bookmark")
+    public String toggleBookmark(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        User currentUser = currentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        boolean bookmarked = snippetService.toggleBookmark(id, currentUser);
+        redirectAttributes.addFlashAttribute("bookmarkUpdated", bookmarked);
+        return "redirect:/snippets/" + id;
+    }
+
+    @GetMapping("/bookmarks")
+    public String bookmarks(Model model) {
+        User currentUser = currentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("bookmarks", snippetService.findBookmarks(currentUser));
+        model.addAttribute("user", currentUser);
+        return "bookmarks";
+    }
+
+    @GetMapping("/tags")
+    public String tags(Model model) {
+        model.addAttribute("tags", snippetService.findAllTags());
+        return "tags";
+    }
+
+    @GetMapping("/users/{username}")
+    public String profile(@PathVariable String username,
+                          @RequestParam(name = "page", defaultValue = "0") int page,
+                          Model model) {
+        User profileUser = userRepository.findByUsername(username);
+        if (profileUser == null) {
+            return "redirect:/home?error=notfound";
+        }
+        Page<Snippet> snippets = snippetService.findPublicSnippetsByUser(profileUser, PageRequest.of(page, 10));
+        model.addAttribute("profileUser", profileUser);
+        model.addAttribute("snippets", snippets.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", snippets.getTotalPages());
+        return "profile";
+    }
+
     @GetMapping("/snippets/{id}/versions")
     public String showVersions(@PathVariable Long id, Model model) {
         User currentUser = currentUser();
@@ -246,6 +310,7 @@ public class SnippetController {
             return "redirect:/login?notFound";
         }
         model.addAttribute("snippet", snippet);
+        model.addAttribute("comments", snippetService.findComments(snippet));
         return "public-snippet";
     }
     

@@ -50,7 +50,7 @@ public class securityConfig {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(registry -> {
                     // Public access paths - only for registration, login, and verification
-                    registry.requestMatchers("/register", "/login", "/verify", "/check-email", "/resend-verification", "/share/**").permitAll();
+                    registry.requestMatchers("/register", "/login", "/verify", "/check-email", "/resend-verification", "/share/**", "/tags", "/users/**").permitAll();
                     registry.requestMatchers("/api/auth/login").permitAll();
                     registry.requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll();
                     

@@ -32,6 +32,12 @@ public class User {
     private int failedLoginAttempts;
     @Column(name = "locked_until")
     private LocalDateTime lockedUntil;
+    @Column(name = "notify_comments", nullable = false)
+    private boolean notifyComments = true;
+    @Column(name = "notify_approvals", nullable = false)
+    private boolean notifyApprovals = true;
+    @Column(name = "notify_product_updates", nullable = false)
+    private boolean notifyProductUpdates;
 
     public User() {
 
@@ -157,6 +163,30 @@ public class User {
 
     public boolean isAccountLocked() {
         return lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now());
+    }
+
+    public boolean isNotifyComments() {
+        return notifyComments;
+    }
+
+    public void setNotifyComments(boolean notifyComments) {
+        this.notifyComments = notifyComments;
+    }
+
+    public boolean isNotifyApprovals() {
+        return notifyApprovals;
+    }
+
+    public void setNotifyApprovals(boolean notifyApprovals) {
+        this.notifyApprovals = notifyApprovals;
+    }
+
+    public boolean isNotifyProductUpdates() {
+        return notifyProductUpdates;
+    }
+
+    public void setNotifyProductUpdates(boolean notifyProductUpdates) {
+        this.notifyProductUpdates = notifyProductUpdates;
     }
 
     @Override
