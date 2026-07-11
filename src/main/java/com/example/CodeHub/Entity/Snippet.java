@@ -8,7 +8,7 @@ import java.util.UUID;
 @Table(name = "snippets", indexes = {
         @Index(name = "idx_snippets_language", columnList = "language"),
         @Index(name = "idx_snippets_title", columnList = "title"),
-        @Index(name = "idx_snippets_created_at", columnList = "createdAt")
+        @Index(name = "idx_snippets_created_at", columnList = "created_at")
 })
 public class Snippet {
     @Id
@@ -18,9 +18,11 @@ public class Snippet {
     private String title;
     private String language;
     private String tags;
+    @Column(name = "collection_name")
     private String collectionName;
-    @Column(unique = true)
+    @Column(name = "share_token", unique = true)
     private String shareToken;
+    @Column(name = "public_snippet", nullable = false)
     private boolean publicSnippet;
     
     @Column(columnDefinition = "TEXT")
@@ -30,11 +32,17 @@ public class Snippet {
     @JoinColumn(name = "user_id")
     private User user;
     
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+    @Column(name = "created_by")
     private String createdBy;
+    @Column(name = "updated_by")
     private String updatedBy;
+    @Column(nullable = false)
     private boolean deleted;
     
     private boolean starred;

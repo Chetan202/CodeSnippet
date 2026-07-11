@@ -27,11 +27,13 @@ public class SnippetVersion {
     private String title;
     private String language;
     private String tags;
+    @Column(name = "collection_name")
     private String collectionName;
 
     @Column(columnDefinition = "TEXT")
     private String code;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     public SnippetVersion() {
