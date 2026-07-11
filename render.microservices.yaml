@@ -1,0 +1,76 @@
+services:
+  - type: web
+    name: codehub-gateway
+    runtime: docker
+    plan: free
+    dockerfilePath: ./microservices/gateway/Dockerfile
+    envVars:
+      - key: JWT_SECRET
+        sync: false
+      - key: AUTH_SERVICE_URL
+        sync: false
+      - key: SNIPPET_SERVICE_URL
+        sync: false
+      - key: NOTIFICATION_ADMIN_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: codehub-auth
+    runtime: docker
+    plan: free
+    dockerfilePath: ./microservices/auth-service/Dockerfile
+    envVars:
+      - key: JWT_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+  - type: web
+    name: codehub-snippet
+    runtime: docker
+    plan: free
+    dockerfilePath: ./microservices/snippet-service/Dockerfile
+    envVars:
+      - key: JWT_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+  - type: web
+    name: codehub-notification-admin
+    runtime: docker
+    plan: free
+    dockerfilePath: ./microservices/notification-admin-service/Dockerfile
+    envVars:
+      - key: JWT_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
