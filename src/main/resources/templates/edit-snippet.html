@@ -221,6 +221,7 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/snippets/{id}/update(id=${snippetId})}" th:object="${snippet}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="title" th:field="*{title}" required>
@@ -249,6 +250,20 @@
                             <div class="mb-3">
                                 <label for="code" class="form-label">Code</label>
                                 <textarea class="form-control code-editor" id="code" th:field="*{code}" rows="10" required></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="collectionName" class="form-label">Folder</label>
+                                    <input type="text" class="form-control" id="collectionName" th:field="*{collectionName}" placeholder="Frontend, Algorithms, Work">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="tags" class="form-label">Tags</label>
+                                    <input type="text" class="form-control" id="tags" th:field="*{tags}" placeholder="react, api, interview">
+                                </div>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="publicSnippet" th:field="*{publicSnippet}">
+                                <label class="form-check-label" for="publicSnippet">Public share link</label>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a th:href="@{/home}" class="btn btn-secondary me-md-2">Cancel</a>

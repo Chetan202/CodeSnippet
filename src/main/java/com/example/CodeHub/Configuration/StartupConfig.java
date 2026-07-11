@@ -1,6 +1,7 @@
 package com.example.CodeHub.Configuration;
 
 import com.example.CodeHub.Services.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,12 @@ import org.springframework.stereotype.Component;
 public class StartupConfig {
 
     private final UserService userService;
+    private final String adminEmail;
 
-    public StartupConfig(UserService userService) {
+    public StartupConfig(UserService userService,
+                         @Value("${app.admin-email:chetanjha888@gmail.com}") String adminEmail) {
         this.userService = userService;
+        this.adminEmail = adminEmail;
     }
 
     /**
@@ -24,6 +28,6 @@ public class StartupConfig {
     @EventListener(ApplicationReadyEvent.class)
     public void updateUserRolesOnStartup() {
         userService.updateUserRoles();
-        System.out.println("User roles updated: Admin privilege set for chetanjha888@gmail.com");
+        System.out.println("User roles updated: Admin privilege set for " + adminEmail);
     }
 }

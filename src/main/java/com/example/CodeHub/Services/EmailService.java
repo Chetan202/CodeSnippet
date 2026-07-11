@@ -22,43 +22,51 @@ public class EmailService {
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
+    @Value("${app.mail-retry-attempts:3}")
+    private int retryAttempts;
+
     public boolean sendVerificationEmail(String toEmail, String token) {
-        try {
-            logger.info("Preparing to send verification email to: {}", toEmail);
-            
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);  // Use the actual email address from properties
-            message.setTo(toEmail);
-            message.setSubject("CodeHub - Verify Your Email");
-            
-            String verificationLink = baseUrl + "/verify?token=" + token;
-            String emailContent = "Hello,\n" +
-                    "\n" +
-                    "Thank you for registering with CodeHub. Please click on the link below to verify your email address:\n" +
-                    "\n" +
-                    verificationLink + "\n" +
-                    "\n" +
-                    "If you did not request this, please ignore this email.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "The CodeHub Team";
-            
-            message.setText(emailContent);
-            
-            logger.info("Email content prepared. Sending to: {}", toEmail);
-            logger.debug("Verification link: {}", verificationLink);
-            
-            mailSender.send(message);
-            logger.info("Email successfully sent to: {}", toEmail);
-            return true;
-        } catch (MailException e) {
-            logger.error("Failed to send email to {}: {}", toEmail, e.getMessage(), e);
-            // Log more detailed error information
-            logger.error("Exception type: {}", e.getClass().getName());
-            if (e.getCause() != null) {
-                logger.error("Root cause: {}", e.getCause().getMessage());
+        SimpleMailMessage message = buildVerificationMessage(toEmail, token);
+        for (int attempt = 1; attempt <= retryAttempts; attempt++) {
+            try {
+                logger.info("Sending verification email to {}. Attempt {}/{}", toEmail, attempt, retryAttempts);
+                mailSender.send(message);
+                logger.info("Email successfully sent to: {}", toEmail);
+                return true;
+            } catch (MailException e) {
+                logger.warn("Verification email attempt {}/{} failed for {}: {}",
+                        attempt, retryAttempts, toEmail, e.getMessage());
+                if (attempt == retryAttempts) {
+                    logger.error("Failed to send email to {} after {} attempts", toEmail, retryAttempts, e);
+                    if (e.getCause() != null) {
+                        logger.error("Root cause: {}", e.getCause().getMessage());
+                    }
+                }
             }
-            return false;
         }
+        return false;
+    }
+
+    private SimpleMailMessage buildVerificationMessage(String toEmail, String token) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("CodeHub - Verify Your Email");
+
+        String verificationLink = baseUrl + "/verify?token=" + token;
+        String emailContent = "Hello,\n" +
+                "\n" +
+                "Thank you for registering with CodeHub. Please click on the link below to verify your email address:\n" +
+                "\n" +
+                verificationLink + "\n" +
+                "\n" +
+                "If you did not request this, please ignore this email.\n" +
+                "\n" +
+                "Best regards,\n" +
+                "The CodeHub Team";
+
+        message.setText(emailContent);
+        logger.debug("Verification link: {}", verificationLink);
+        return message;
     }
 }

@@ -11,25 +11,34 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SnippetRepository extends JpaRepository<Snippet, Long> {
-    List<Snippet> findByUser(User user);
-    List<Snippet> findAllByOrderByCreatedAtDesc();
-    List<Snippet> findAllByOrderByStarredDescCreatedAtDesc();
-    List<Snippet> findByUserOrderByStarredDescCreatedAtDesc(User user);
+    List<Snippet> findByUserAndDeletedFalse(User user);
+    List<Snippet> findAllByDeletedFalseOrderByCreatedAtDesc();
+    List<Snippet> findAllByDeletedFalseOrderByStarredDescCreatedAtDesc();
+    List<Snippet> findByUserAndDeletedFalseOrderByStarredDescCreatedAtDesc(User user);
+    Snippet findByShareTokenAndPublicSnippetTrueAndDeletedFalse(String shareToken);
     
     // Pagination methods
-    Page<Snippet> findAllByOrderByStarredDescCreatedAtDesc(Pageable pageable);
-    Page<Snippet> findByUserOrderByStarredDescCreatedAtDesc(User user, Pageable pageable);
+    Page<Snippet> findAllByDeletedFalseOrderByStarredDescCreatedAtDesc(Pageable pageable);
+    Page<Snippet> findByUserAndDeletedFalseOrderByStarredDescCreatedAtDesc(User user, Pageable pageable);
     
     // Search methods
-    @Query("SELECT s FROM Snippet s WHERE " +
+    @Query("SELECT s FROM Snippet s WHERE s.deleted = false AND (" +
            "LOWER(s.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.language) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+           "LOWER(s.tags) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(s.collectionName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     Page<Snippet> searchSnippets(@Param("searchTerm") String searchTerm, Pageable pageable);
     
-    @Query("SELECT s FROM Snippet s WHERE s.user = :user AND (" +
+    @Query("SELECT s FROM Snippet s WHERE s.user = :user AND s.deleted = false AND (" +
            "LOWER(s.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.language) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(s.tags) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(s.collectionName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     Page<Snippet> searchUserSnippets(@Param("user") User user, @Param("searchTerm") String searchTerm, Pageable pageable);
+
+    long countByDeletedFalse();
+    long countByPublicSnippetTrueAndDeletedFalse();
+    long countByPublicSnippetFalseAndDeletedFalse();
 }

@@ -48,6 +48,7 @@
             </div>
 
             <form th:action="@{/register}" th:object="${user}" method="post" id="registrationForm">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <div class="field">
                     <label for="email">Email</label>
                     <input th:field="*{email}" type="email" id="email" autocomplete="email" placeholder="you@example.com" aria-describedby="emailError" required autofocus>
@@ -65,6 +66,7 @@
             </form>
 
             <form class="resend-form" th:action="@{/resend-verification}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <label for="resendEmail">Did not receive the email?</label>
                 <div class="resend-row">
                     <input id="resendEmail" name="email" type="email" placeholder="Your registered email" required>

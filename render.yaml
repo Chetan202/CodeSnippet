@@ -15,8 +15,18 @@ services:
         sync: false
       - key: APP_BASE_URL
         sync: false
+      - key: APP_ADMIN_EMAIL
+        value: chetanjha888@gmail.com
       - key: JWT_SECRET
         generateValue: true
+      - key: MAX_FAILED_LOGIN_ATTEMPTS
+        value: 5
+      - key: ACCOUNT_LOCKOUT_MINUTES
+        value: 15
+      - key: RATE_LIMIT_WINDOW_SECONDS
+        value: 60
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 20
       - key: MAIL_USERNAME
         sync: false
       - key: MAIL_PASSWORD

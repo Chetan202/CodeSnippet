@@ -38,6 +38,8 @@ public class AdminController {
         model.addAttribute("verifiedUsers", userRepository.countByIsVerifiedTrue());
         model.addAttribute("pendingUsers", userRepository.countByIsVerifiedFalse());
         model.addAttribute("totalSnippets", snippetService.countSnippets());
+        model.addAttribute("publicSnippets", snippetService.countPublicSnippets());
+        model.addAttribute("privateSnippets", snippetService.countPrivateSnippets());
         model.addAttribute("todayActiveUsers", userViewService.getViewCountForDate(today));
         model.addAttribute("recentActivity", userViewService.getViewCountsByDateRange(today.minusDays(6), today));
         return "admin-statistics";

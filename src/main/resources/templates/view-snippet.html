@@ -227,9 +227,17 @@
                         <pre><code th:id="codeBlock" th:class="'language-' + ${snippet.language.toLowerCase()}" th:text="${snippet.code}">// Code here</code></pre>
                     </div>
                     <div class="snippet-meta">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted" th:text="'Created by ' + ${snippet.user.username}">Created by username</small>
-                            <small class="text-muted" th:text="${#temporals.format(snippet.createdAt, 'dd MMM yyyy HH:mm')}">01 Jan 2023 12:00</small>
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted" th:text="'Created by ' + ${snippet.user.username}">Created by username</small>
+                                <small class="text-muted d-block" th:if="${snippet.collectionName}" th:text="'Folder: ' + ${snippet.collectionName}">Folder</small>
+                                <small class="text-muted d-block" th:if="${snippet.tags}" th:text="'Tags: ' + ${snippet.tags}">Tags</small>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted d-block" th:text="${#temporals.format(snippet.createdAt, 'dd MMM yyyy HH:mm')}">01 Jan 2023 12:00</small>
+                                <a class="btn btn-sm btn-outline-secondary mt-2" th:href="@{/snippets/{id}/versions(id=${snippet.id})}">Version history</a>
+                                <a class="btn btn-sm btn-outline-primary mt-2" th:if="${snippet.publicSnippet}" th:href="@{/share/{token}(token=${snippet.shareToken})}">Public link</a>
+                            </div>
                         </div>
                     </div>
                 </div>
