@@ -16,15 +16,21 @@ public class User {
     private String password;
     @Column(unique = true)
     private String email;
+    @Column(name = "verification_token")
     private String verificationToken;
+    @Column(name = "verification_token_expires_at")
     private LocalDateTime verificationTokenExpiresAt;
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified; // Ensure proper column name mapping
     @Column(name = "role", nullable = false)
     private String role = "USER"; // Default role is USER
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Column(name = "failed_login_attempts", nullable = false)
     private int failedLoginAttempts;
+    @Column(name = "locked_until")
     private LocalDateTime lockedUntil;
 
     public User() {
