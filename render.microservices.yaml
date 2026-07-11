@@ -3,7 +3,8 @@ services:
     name: codehub-gateway
     runtime: docker
     plan: free
-    dockerfilePath: ./microservices/gateway/Dockerfile
+    rootDir: microservices/gateway
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: JWT_SECRET
         sync: false
@@ -18,7 +19,8 @@ services:
     name: codehub-auth
     runtime: docker
     plan: free
-    dockerfilePath: ./microservices/auth-service/Dockerfile
+    rootDir: microservices/auth-service
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: JWT_SECRET
         sync: false
@@ -35,7 +37,8 @@ services:
     name: codehub-snippet
     runtime: docker
     plan: free
-    dockerfilePath: ./microservices/snippet-service/Dockerfile
+    rootDir: microservices/snippet-service
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: JWT_SECRET
         sync: false
@@ -52,7 +55,8 @@ services:
     name: codehub-notification-admin
     runtime: docker
     plan: free
-    dockerfilePath: ./microservices/notification-admin-service/Dockerfile
+    rootDir: microservices/notification-admin-service
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: JWT_SECRET
         sync: false

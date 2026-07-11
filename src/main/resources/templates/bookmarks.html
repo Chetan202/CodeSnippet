@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarks - CodeHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg app-navbar">
+    <div class="container"><a class="navbar-brand" th:href="@{/home}"><span class="brand-mark">&lt;/&gt;</span><span>CodeHub</span></a></div>
+</nav>
+<main class="container py-4">
+    <h1 class="h3 mb-3">Bookmarks</h1>
+    <div class="alert alert-info" th:if="${#lists.isEmpty(bookmarks)}">No bookmarks yet.</div>
+    <div class="list-group" th:each="bookmark : ${bookmarks}">
+        <a class="list-group-item list-group-item-action" th:href="@{/snippets/{id}(id=${bookmark.snippet.id})}">
+            <strong th:text="${bookmark.snippet.title}">Snippet</strong>
+            <span class="badge bg-secondary ms-2" th:text="${bookmark.snippet.language}">Java</span>
+        </a>
+    </div>
+</main>
+</body>
+</html>

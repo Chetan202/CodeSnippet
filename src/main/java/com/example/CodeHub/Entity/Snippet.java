@@ -2,6 +2,8 @@ package com.example.CodeHub.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -46,6 +48,14 @@ public class Snippet {
     private boolean deleted;
     
     private boolean starred;
+
+    @ManyToMany
+    @JoinTable(
+            name = "snippet_tags",
+            joinColumns = @JoinColumn(name = "snippet_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tagEntities = new HashSet<>();
     
     public Snippet() {
         this.createdAt = LocalDateTime.now();
@@ -221,5 +231,13 @@ public class Snippet {
 
     public void setStarred(boolean starred) {
         this.starred = starred;
+    }
+
+    public Set<Tag> getTagEntities() {
+        return tagEntities;
+    }
+
+    public void setTagEntities(Set<Tag> tagEntities) {
+        this.tagEntities = tagEntities;
     }
 }

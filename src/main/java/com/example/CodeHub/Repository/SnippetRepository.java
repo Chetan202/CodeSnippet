@@ -20,6 +20,7 @@ public interface SnippetRepository extends JpaRepository<Snippet, Long> {
     // Pagination methods
     Page<Snippet> findAllByDeletedFalseOrderByStarredDescCreatedAtDesc(Pageable pageable);
     Page<Snippet> findByUserAndDeletedFalseOrderByStarredDescCreatedAtDesc(User user, Pageable pageable);
+    Page<Snippet> findByUserAndPublicSnippetTrueAndDeletedFalseOrderByCreatedAtDesc(User user, Pageable pageable);
     
     // Search methods
     @Query("SELECT s FROM Snippet s WHERE s.deleted = false AND (" +

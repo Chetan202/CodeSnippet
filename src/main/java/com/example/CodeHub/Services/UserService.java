@@ -9,6 +9,7 @@ public interface UserService {
     User findByEmail(String email);
 
     User save(UserDto userDto);
+    User saveExisting(User user);
     
     String generateVerificationToken(User user);
     

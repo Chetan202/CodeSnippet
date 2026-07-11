@@ -54,6 +54,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User saveExisting(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         user.setVerificationToken(token);
