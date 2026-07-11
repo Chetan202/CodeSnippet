@@ -117,6 +117,9 @@ public class SnippetController {
         snippetDto.setTitle(snippet.getTitle());
         snippetDto.setLanguage(snippet.getLanguage());
         snippetDto.setCode(snippet.getCode());
+        snippetDto.setTags(snippet.getTags());
+        snippetDto.setCollectionName(snippet.getCollectionName());
+        snippetDto.setPublicSnippet(snippet.isPublicSnippet());
         
         model.addAttribute("snippet", snippetDto);
         model.addAttribute("snippetId", id);
@@ -204,6 +207,47 @@ public class SnippetController {
         redirectAttributes.addFlashAttribute("snippetStarred", newStarredStatus);
         return "redirect:/home";
     }
+
+    @GetMapping("/snippets/{id}/versions")
+    public String showVersions(@PathVariable Long id, Model model) {
+        User currentUser = currentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        Snippet snippet = snippetService.findById(id);
+        if (snippet == null || !snippet.getUser().getId().equals(currentUser.getId())) {
+            return "redirect:/home?error=unauthorized";
+        }
+        model.addAttribute("snippet", snippet);
+        model.addAttribute("versions", snippetService.findVersions(snippet));
+        return "snippet-versions";
+    }
+
+    @PostMapping("/snippets/{snippetId}/versions/{versionId}/revert")
+    public String revertVersion(@PathVariable Long snippetId, @PathVariable Long versionId,
+                                RedirectAttributes redirectAttributes) {
+        User currentUser = currentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        Snippet snippet = snippetService.findById(snippetId);
+        if (snippet == null || !snippet.getUser().getId().equals(currentUser.getId())) {
+            return "redirect:/home?error=unauthorized";
+        }
+        snippetService.revertToVersion(snippetId, versionId);
+        redirectAttributes.addFlashAttribute("snippetUpdated", true);
+        return "redirect:/snippets/" + snippetId;
+    }
+
+    @GetMapping("/share/{token}")
+    public String viewSharedSnippet(@PathVariable String token, Model model) {
+        Snippet snippet = snippetService.findPublicByShareToken(token);
+        if (snippet == null) {
+            return "redirect:/login?notFound";
+        }
+        model.addAttribute("snippet", snippet);
+        return "public-snippet";
+    }
     
     /**
      * REST endpoint for search suggestions
@@ -254,5 +298,13 @@ public class SnippetController {
                 .collect(Collectors.toList());
         
         return ResponseEntity.ok(previewData);
+    }
+
+    private User currentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return null;
+        }
+        return userRepository.findByUsername(auth.getName());
     }
 }

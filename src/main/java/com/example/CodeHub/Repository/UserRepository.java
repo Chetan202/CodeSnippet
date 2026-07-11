@@ -1,7 +1,5 @@
 package com.example.CodeHub.Repository;
 
-
-import com.example.CodeHub.Dto.UserDto;
 import com.example.CodeHub.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

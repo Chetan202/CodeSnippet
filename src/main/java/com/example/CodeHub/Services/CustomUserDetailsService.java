@@ -29,7 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("Username or Password not found");
         }
-        return new CustomUserDetails(user.getUsername(), user.getPassword(), authorities(user.getRole()), user.getEmail(), user.isVerified());
+        return new CustomUserDetails(
+                user.getUsername(),
+                user.getPassword(),
+                authorities(user.getRole()),
+                user.getEmail(),
+                user.isVerified(),
+                !user.isAccountLocked()
+        );
     }
 
     public Collection<? extends GrantedAuthority> authorities(String role) {

@@ -4,6 +4,9 @@ public class SnippetDto {
     private String title;
     private String language;
     private String code;
+    private String tags;
+    private String collectionName;
+    private boolean publicSnippet;
     
     public SnippetDto() {
     }
@@ -36,5 +39,29 @@ public class SnippetDto {
     
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public String getCollectionName() {
+        return collectionName;
+    }
+
+    public void setCollectionName(String collectionName) {
+        this.collectionName = collectionName;
+    }
+
+    public boolean isPublicSnippet() {
+        return publicSnippet;
+    }
+
+    public void setPublicSnippet(boolean publicSnippet) {
+        this.publicSnippet = publicSnippet;
     }
 }

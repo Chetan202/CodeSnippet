@@ -4,6 +4,7 @@ import com.example.CodeHub.Dto.UserDto;
 import com.example.CodeHub.Entity.User;
 import com.example.CodeHub.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Value("${app.admin-email:chetanjha888@gmail.com}")
+    private String adminEmail;
 
     private UserRepository userRepository;
 
@@ -40,7 +44,7 @@ public class UserServiceImpl implements UserService {
         user.setVerified(false); // Set default verification status to false
         
         // Set ADMIN role for the specific email
-        if ("chetanjha888@gmail.com".equalsIgnoreCase(userDto.getEmail())) {
+        if (adminEmail.equalsIgnoreCase(userDto.getEmail())) {
             user.setRole("ADMIN");
         } else {
             user.setRole("USER");
@@ -94,12 +98,12 @@ public class UserServiceImpl implements UserService {
     
     /**
      * Updates roles for all existing users based on their email address
-     * Only the user with email chetanjha888@gmail.com will have admin privileges
+     * Only the configured admin email will have admin privileges.
      */
     public void updateUserRoles() {
         Iterable<User> allUsers = userRepository.findAll();
         for (User user : allUsers) {
-            if ("chetanjha888@gmail.com".equalsIgnoreCase(user.getEmail())) {
+            if (adminEmail.equalsIgnoreCase(user.getEmail())) {
                 user.setRole("ADMIN");
             } else {
                 // Make sure everyone else has USER role
