@@ -2,8 +2,6 @@ package com.example.CodeHub.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,9 +17,6 @@ public class Snippet {
     
     private String title;
     private String language;
-    private String tags;
-    @Column(name = "collection_name")
-    private String collectionName;
     @Column(name = "share_token", unique = true)
     private String shareToken;
     @Column(name = "public_snippet", nullable = false)
@@ -49,14 +44,6 @@ public class Snippet {
     
     private boolean starred;
 
-    @ManyToMany
-    @JoinTable(
-            name = "snippet_tags",
-            joinColumns = @JoinColumn(name = "snippet_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> tagEntities = new HashSet<>();
-    
     public Snippet() {
         this.createdAt = LocalDateTime.now();
         this.starred = false;
@@ -127,22 +114,6 @@ public class Snippet {
 
     public void setLanguage(String language) {
         this.language = language;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public String getCollectionName() {
-        return collectionName;
-    }
-
-    public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
     }
 
     public String getShareToken() {
@@ -233,11 +204,4 @@ public class Snippet {
         this.starred = starred;
     }
 
-    public Set<Tag> getTagEntities() {
-        return tagEntities;
-    }
-
-    public void setTagEntities(Set<Tag> tagEntities) {
-        this.tagEntities = tagEntities;
-    }
 }

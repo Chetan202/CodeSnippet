@@ -64,7 +64,7 @@ public class AuthApiController {
                 }
                 userRepository.save(user);
             }
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials, unverified account, or locked account"));
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials or locked account"));
         }
     }
 

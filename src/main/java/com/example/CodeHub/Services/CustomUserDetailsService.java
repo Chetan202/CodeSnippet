@@ -34,7 +34,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getPassword(),
                 authorities(user.getRole()),
                 user.getEmail(),
-                user.isVerified(),
                 !user.isAccountLocked()
         );
     }

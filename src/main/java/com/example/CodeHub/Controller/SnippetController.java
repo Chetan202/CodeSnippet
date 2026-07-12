@@ -94,7 +94,6 @@ public class SnippetController {
         }
         
         model.addAttribute("snippet", snippet);
-        model.addAttribute("comments", snippetService.findComments(snippet));
         model.addAttribute("bookmarked", snippetService.isBookmarked(snippet, currentUser));
         return "view-snippet";
     }
@@ -121,8 +120,6 @@ public class SnippetController {
         snippetDto.setTitle(snippet.getTitle());
         snippetDto.setLanguage(snippet.getLanguage());
         snippetDto.setCode(snippet.getCode());
-        snippetDto.setTags(snippet.getTags());
-        snippetDto.setCollectionName(snippet.getCollectionName());
         snippetDto.setPublicSnippet(snippet.isPublicSnippet());
         
         model.addAttribute("snippet", snippetDto);
@@ -212,22 +209,6 @@ public class SnippetController {
         return "redirect:/home";
     }
 
-    @PostMapping("/snippets/{id}/comments")
-    public String addComment(@PathVariable Long id, @RequestParam("content") String content,
-                             RedirectAttributes redirectAttributes) {
-        User currentUser = currentUser();
-        if (currentUser == null) {
-            return "redirect:/login";
-        }
-        Snippet snippet = snippetService.findById(id);
-        if (snippet == null || (!snippet.isPublicSnippet() && !snippet.getUser().getId().equals(currentUser.getId()))) {
-            return "redirect:/home?error=unauthorized";
-        }
-        snippetService.addComment(id, currentUser, content);
-        redirectAttributes.addFlashAttribute("commentAdded", true);
-        return "redirect:/snippets/" + id;
-    }
-
     @PostMapping("/snippets/{id}/bookmark")
     public String toggleBookmark(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         User currentUser = currentUser();
@@ -248,12 +229,6 @@ public class SnippetController {
         model.addAttribute("bookmarks", snippetService.findBookmarks(currentUser));
         model.addAttribute("user", currentUser);
         return "bookmarks";
-    }
-
-    @GetMapping("/tags")
-    public String tags(Model model) {
-        model.addAttribute("tags", snippetService.findAllTags());
-        return "tags";
     }
 
     @GetMapping("/users/{username}")
@@ -310,7 +285,6 @@ public class SnippetController {
             return "redirect:/login?notFound";
         }
         model.addAttribute("snippet", snippet);
-        model.addAttribute("comments", snippetService.findComments(snippet));
         return "public-snippet";
     }
     

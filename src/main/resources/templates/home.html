@@ -473,7 +473,7 @@
         }
         
         .action-icons .fa-edit.text-primary {
-            color: #FF9800 !important;
+            color: #172033 !important;
         }
         
         .action-icons .fa-trash.text-danger {
@@ -753,12 +753,6 @@
                     <li class="nav-item" sec:authorize="isAuthenticated">
                         <a class="nav-link" th:href="@{/bookmarks}"><i class="fas fa-bookmark"></i><span>Bookmarks</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/tags}"><i class="fas fa-tags"></i><span>Tags</span></a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated">
-                        <a class="nav-link" th:href="@{/settings/notifications}"><i class="fas fa-bell"></i><span>Notifications</span></a>
-                    </li>
                     <li class="nav-item" sec:authorize="isAuthenticated" th:if="${user}">
                         <a class="nav-link" th:href="@{/users/{username}(username=${user.username})}"><i class="fas fa-id-card"></i><span>Profile</span></a>
                     </li>
@@ -967,11 +961,11 @@
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <div>
                                 <small class="text-muted d-block" th:text="'Created by ' + ${snippet.user.username}">Created by username</small>
-                                <small class="text-muted d-block" th:if="${snippet.collectionName}" th:text="'Folder: ' + ${snippet.collectionName}">Folder</small>
-                                <small class="text-muted d-block" th:if="${snippet.tags}" th:text="'Tags: ' + ${snippet.tags}">Tags</small>
                             </div>
                             <div class="d-flex gap-2">
-                                <a th:if="${snippet.publicSnippet}" th:href="@{/share/{token}(token=${snippet.shareToken})}" class="btn btn-sm btn-outline-secondary">Share</a>
+                                <button th:if="${snippet.publicSnippet}" type="button" class="btn btn-sm btn-outline-secondary share-copy-btn" th:data-share-path="@{/share/{token}(token=${snippet.shareToken})}" title="Copy share link">
+                                    <i class="fas fa-link"></i><span class="ms-1">Share</span>
+                                </button>
                                 <a th:href="@{/snippets/{id}(id=${snippet.id})}" class="btn btn-sm btn-primary">View</a>
                             </div>
                         </div>
@@ -1558,6 +1552,26 @@
                     fetchSuggestions(searchInput.value);
                 }
             }
+        });
+    </script>
+    <script>
+        document.addEventListener('click', function (event) {
+            const shareButton = event.target.closest('.share-copy-btn');
+            if (!shareButton) {
+                return;
+            }
+            const shareUrl = new URL(shareButton.dataset.sharePath, window.location.origin).toString();
+            navigator.clipboard.writeText(shareUrl).then(function () {
+                const originalHtml = shareButton.innerHTML;
+                shareButton.innerHTML = '<i class="fas fa-check"></i><span class="ms-1">Copied</span>';
+                shareButton.classList.remove('btn-outline-secondary');
+                shareButton.classList.add('btn-success');
+                setTimeout(function () {
+                    shareButton.innerHTML = originalHtml;
+                    shareButton.classList.add('btn-outline-secondary');
+                    shareButton.classList.remove('btn-success');
+                }, 1800);
+            });
         });
     </script>
 </body>

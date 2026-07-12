@@ -11,16 +11,14 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private String email;
-    private boolean verified;
     private boolean accountNonLocked;
 
     public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
-                             String email, boolean verified, boolean accountNonLocked) {
+                             String email, boolean accountNonLocked) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.email = email;
-        this.verified = verified;
         this.accountNonLocked = accountNonLocked;
     }
 
@@ -60,7 +58,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        // Only allow login if the account is verified
-        return verified;
+        return true;
     }
 }

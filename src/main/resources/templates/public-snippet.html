@@ -22,8 +22,6 @@
         <h1 class="mt-4 mb-2" th:text="${snippet.title}">Snippet title</h1>
         <div class="d-flex flex-wrap gap-2 align-items-center">
             <span class="language-tag" th:text="${snippet.language}">Java</span>
-            <span th:if="${snippet.collectionName}" th:text="${snippet.collectionName}">Folder</span>
-            <span th:if="${snippet.tags}" th:text="${snippet.tags}">tags</span>
         </div>
     </div>
 </header>
@@ -31,18 +29,6 @@
     <article class="snippet-card bg-white">
         <pre><code th:class="'language-' + ${snippet.language.toLowerCase()}" th:text="${snippet.code}">// code</code></pre>
     </article>
-    <section class="mt-4">
-        <h2 class="h4">Comments</h2>
-        <div class="alert alert-info" th:if="${#lists.isEmpty(comments)}">No comments yet.</div>
-        <div class="card mb-2" th:each="comment : ${comments}">
-            <div class="card-body">
-                <strong th:text="${comment.user.username}">user</strong>
-                <small class="text-muted" th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy HH:mm')}">date</small>
-                <p class="mb-0" th:text="${comment.content}">comment</p>
-            </div>
-        </div>
-        <a class="btn btn-primary btn-sm mt-2" th:href="@{/login}">Log in to comment</a>
-    </section>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
 <script>document.querySelectorAll('pre code').forEach((el) => hljs.highlightElement(el));</script>

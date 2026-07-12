@@ -11,13 +11,5 @@ public interface UserService {
     User save(UserDto userDto);
     User saveExisting(User user);
     
-    String generateVerificationToken(User user);
-    
-    boolean verifyUser(String token);
-
-    boolean isVerificationTokenValid(User user);
-    
-    User findByVerificationToken(String token);
-    
     void updateUserRoles();
 }
