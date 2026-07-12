@@ -9,9 +9,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
     User findByEmail(String email); // NEW
-    User findByVerificationToken(String verificationToken); // NEW
     List<User> findAllByOrderByCreatedAtDesc();
-    long countByIsVerifiedTrue();
-    long countByIsVerifiedFalse();
 
 }

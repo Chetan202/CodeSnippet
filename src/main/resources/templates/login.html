@@ -26,10 +26,10 @@
     <section class="auth-main">
         <div class="auth-card">
             <h2>Welcome back</h2>
-            <p class="auth-subtitle">Enter your account details to continue.</p>
+            <p class="auth-subtitle">Continue with Google or GitHub.</p>
 
             <div class="alert alert-error" th:if="${param.error}">
-                <p>Login failed. Check your credentials and verify your email first.</p>
+                <p>Login failed. Try another provider or check your account access.</p>
             </div>
             <div class="alert alert-error" th:if="${loginError}">
                 <p th:text="${loginError}">You must be logged in to continue.</p>
@@ -37,27 +37,12 @@
             <div class="alert alert-success" th:if="${param.logout}">
                 <p>You have been logged out.</p>
             </div>
-            <div class="alert alert-success" th:if="${param.verified}">
-                <p>Email verified. You can now log in.</p>
-            </div>
-            <div class="alert alert-error" th:if="${param.invalid_token}">
-                <p>The verification link is invalid or expired.</p>
+            <div class="oauth-actions">
+                <a class="oauth-button" th:href="@{/oauth2/authorization/google}">Continue with Google</a>
+                <a class="oauth-button" th:href="@{/oauth2/authorization/github}">Continue with GitHub</a>
             </div>
 
-            <form th:action="@{/login}" method="post" th:object="${user}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <div class="field">
-                    <label for="username">Username</label>
-                    <input th:field="*{username}" type="text" id="username" autocomplete="username" placeholder="Enter your username" required autofocus>
-                </div>
-                <div class="field">
-                    <label for="password">Password</label>
-                    <input th:field="*{password}" type="password" id="password" autocomplete="current-password" placeholder="Enter your password" required>
-                </div>
-                <button class="primary-button" type="submit">Log in</button>
-            </form>
-
-            <p class="auth-footer">New to CodeHub? <a th:href="@{/register}">Create an account</a></p>
+            <p class="auth-footer">No password needed. Your account is created automatically.</p>
         </div>
     </section>
 </main>

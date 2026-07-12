@@ -26,16 +26,12 @@ public interface SnippetRepository extends JpaRepository<Snippet, Long> {
     @Query("SELECT s FROM Snippet s WHERE s.deleted = false AND (" +
            "LOWER(s.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.language) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(s.tags) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(s.collectionName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     Page<Snippet> searchSnippets(@Param("searchTerm") String searchTerm, Pageable pageable);
     
     @Query("SELECT s FROM Snippet s WHERE s.user = :user AND s.deleted = false AND (" +
            "LOWER(s.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.language) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(s.tags) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(s.collectionName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(s.code) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
     Page<Snippet> searchUserSnippets(@Param("user") User user, @Param("searchTerm") String searchTerm, Pageable pageable);
 

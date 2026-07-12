@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-import java.time.LocalDateTime;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,7 +39,6 @@ public class UserServiceImpl implements UserService {
     public User save(UserDto userDto) {
         User user = new User(userDto.getUsername(), passwordEncoder.encode(userDto.getPassword()),
                 userDto.getEmail());
-        user.setVerified(false); // Set default verification status to false
         
         // Set ADMIN role for the specific email
         if (adminEmail.equalsIgnoreCase(userDto.getEmail())) {
@@ -58,49 +55,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
-    public String generateVerificationToken(User user) {
-        String token = UUID.randomUUID().toString();
-        user.setVerificationToken(token);
-        user.setVerificationTokenExpiresAt(LocalDateTime.now().plusHours(24));
-        userRepository.save(user);
-        return token;
-    }
-
-    @Override
-    public boolean verifyUser(String token) {
-        User user = findByVerificationToken(token);
-        if (isVerificationTokenValid(user)) {
-            // Check if user is already verified
-            if (user.isVerified()) {
-                // Token has already been used, return false to indicate token expired
-                return false;
-            }
-            
-            // Mark user as verified and clear the token
-            user.setVerified(true);
-            user.setVerificationToken(null); // Clear token after verification
-            user.setVerificationTokenExpiresAt(null);
-            userRepository.save(user);
-            return true;
-        }
-        // Token not found
-        return false;
-    }
-
-    @Override
-    public boolean isVerificationTokenValid(User user) {
-        return user != null
-                && !user.isVerified()
-                && user.getVerificationTokenExpiresAt() != null
-                && user.getVerificationTokenExpiresAt().isAfter(LocalDateTime.now());
-    }
-
-    @Override
-    public User findByVerificationToken(String token) {
-        return userRepository.findByVerificationToken(token);
-    }
-    
     /**
      * Updates roles for all existing users based on their email address
      * Only the configured admin email will have admin privileges.

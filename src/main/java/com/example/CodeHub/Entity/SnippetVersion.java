@@ -26,9 +26,6 @@ public class SnippetVersion {
 
     private String title;
     private String language;
-    private String tags;
-    @Column(name = "collection_name")
-    private String collectionName;
 
     @Column(columnDefinition = "TEXT")
     private String code;
@@ -43,8 +40,6 @@ public class SnippetVersion {
         this.snippet = snippet;
         this.title = snippet.getTitle();
         this.language = snippet.getLanguage();
-        this.tags = snippet.getTags();
-        this.collectionName = snippet.getCollectionName();
         this.code = snippet.getCode();
     }
 
@@ -69,14 +64,6 @@ public class SnippetVersion {
 
     public String getLanguage() {
         return language;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public String getCollectionName() {
-        return collectionName;
     }
 
     public String getCode() {

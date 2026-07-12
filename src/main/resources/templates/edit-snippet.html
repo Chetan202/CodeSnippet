@@ -253,16 +253,6 @@
                                 <label for="code" class="form-label">Code</label>
                                 <textarea class="form-control code-editor" id="code" th:field="*{code}" rows="10" required></textarea>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="collectionName" class="form-label">Folder</label>
-                                    <input type="text" class="form-control" id="collectionName" th:field="*{collectionName}" placeholder="Frontend, Algorithms, Work">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="tags" class="form-label">Tags</label>
-                                    <input type="text" class="form-control" id="tags" th:field="*{tags}" placeholder="react, api, interview">
-                                </div>
-                            </div>
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" type="checkbox" role="switch" id="publicSnippet" th:field="*{publicSnippet}">
                                 <label class="form-check-label" for="publicSnippet">Public share link</label>

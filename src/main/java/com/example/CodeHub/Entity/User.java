@@ -16,12 +16,6 @@ public class User {
     private String password;
     @Column(unique = true)
     private String email;
-    @Column(name = "verification_token")
-    private String verificationToken;
-    @Column(name = "verification_token_expires_at")
-    private LocalDateTime verificationTokenExpiresAt;
-    @Column(name = "is_verified", nullable = false)
-    private boolean isVerified; // Ensure proper column name mapping
     @Column(name = "role", nullable = false)
     private String role = "USER"; // Default role is USER
     @Column(name = "created_at")
@@ -32,12 +26,6 @@ public class User {
     private int failedLoginAttempts;
     @Column(name = "locked_until")
     private LocalDateTime lockedUntil;
-    @Column(name = "notify_comments", nullable = false)
-    private boolean notifyComments = true;
-    @Column(name = "notify_approvals", nullable = false)
-    private boolean notifyApprovals = true;
-    @Column(name = "notify_product_updates", nullable = false)
-    private boolean notifyProductUpdates;
 
     public User() {
 
@@ -97,30 +85,6 @@ public class User {
         this.email = email;
     }
 
-    public String getVerificationToken() {
-        return verificationToken;
-    }
-
-    public void setVerificationToken(String verificationToken) {
-        this.verificationToken = verificationToken;
-    }
-
-    public LocalDateTime getVerificationTokenExpiresAt() {
-        return verificationTokenExpiresAt;
-    }
-
-    public void setVerificationTokenExpiresAt(LocalDateTime verificationTokenExpiresAt) {
-        this.verificationTokenExpiresAt = verificationTokenExpiresAt;
-    }
-
-    public boolean isVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(boolean verified) {
-        isVerified = verified;
-    }
-
     public String getRole() {
         return role;
     }
@@ -163,30 +127,6 @@ public class User {
 
     public boolean isAccountLocked() {
         return lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now());
-    }
-
-    public boolean isNotifyComments() {
-        return notifyComments;
-    }
-
-    public void setNotifyComments(boolean notifyComments) {
-        this.notifyComments = notifyComments;
-    }
-
-    public boolean isNotifyApprovals() {
-        return notifyApprovals;
-    }
-
-    public void setNotifyApprovals(boolean notifyApprovals) {
-        this.notifyApprovals = notifyApprovals;
-    }
-
-    public boolean isNotifyProductUpdates() {
-        return notifyProductUpdates;
-    }
-
-    public void setNotifyProductUpdates(boolean notifyProductUpdates) {
-        this.notifyProductUpdates = notifyProductUpdates;
     }
 
     @Override

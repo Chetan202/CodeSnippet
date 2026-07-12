@@ -23,15 +23,18 @@ public class securityConfig {
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final com.example.CodeHub.Services.OAuth2AccountService oAuth2AccountService;
     private final String adminEmail;
 
     public securityConfig(AuthenticationSuccessHandler authenticationSuccessHandler,
                           AuthenticationFailureHandler authenticationFailureHandler,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
+                          com.example.CodeHub.Services.OAuth2AccountService oAuth2AccountService,
                           @Value("${app.admin-email:chetanjha888@gmail.com}") String adminEmail) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.oAuth2AccountService = oAuth2AccountService;
         this.adminEmail = adminEmail;
     }
 
@@ -49,8 +52,7 @@ public class securityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(registry -> {
-                    // Public access paths - only for registration, login, and verification
-                    registry.requestMatchers("/register", "/login", "/verify", "/check-email", "/resend-verification", "/share/**", "/tags", "/users/**").permitAll();
+                    registry.requestMatchers("/register", "/login", "/oauth2/**", "/login/oauth2/**", "/share/**", "/users/**").permitAll();
                     registry.requestMatchers("/api/auth/login").permitAll();
                     registry.requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll();
                     
@@ -64,8 +66,7 @@ public class securityConfig {
                     registry.requestMatchers("/home", "/snippets/**", "/api/search-snippets").authenticated();
                     
                     // Admin access is tied to the owner's authenticated email, not only a mutable role.
-                    registry.requestMatchers("/admin/**").access(new WebExpressionAuthorizationManager(
-                            "hasRole('ADMIN') and authentication.principal.email.equalsIgnoreCase('" + adminEmail + "')"));
+                    registry.requestMatchers("/admin/**").hasRole("ADMIN");
                     
                     // All other requests require authentication
                     registry.anyRequest().authenticated();
@@ -78,6 +79,10 @@ public class securityConfig {
                             .failureHandler(authenticationFailureHandler)
                             .permitAll();
                 })
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2AccountService))
+                        .defaultSuccessUrl("/home", true))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")

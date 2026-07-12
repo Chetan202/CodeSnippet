@@ -34,8 +34,6 @@
         td { font-size: .88rem; }
         tbody tr:last-child td { border-bottom: 0; }
         .status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; font-size: .76rem; font-weight: 700; }
-        .status.verified { color: #067647; background: #ecfdf3; }
-        .status.pending { color: #b54708; background: #fffaeb; }
         .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
         .empty { padding: 24px; color: #667085; text-align: center; }
         @media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .activity { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -63,14 +61,12 @@
     <header class="page-heading">
         <div>
             <h1>Administration</h1>
-            <p>Accounts, verification health, and recent CodeHub activity.</p>
+            <p>Accounts, snippet health, and recent CodeHub activity.</p>
         </div>
     </header>
 
     <section class="metric-grid" aria-label="Summary statistics">
         <div class="metric"><span class="metric-icon"><i class="fa-solid fa-users"></i></span><strong class="metric-value" th:text="${totalUsers}">0</strong><span class="metric-label">Total accounts</span></div>
-        <div class="metric"><span class="metric-icon"><i class="fa-solid fa-user-check"></i></span><strong class="metric-value" th:text="${verifiedUsers}">0</strong><span class="metric-label">Verified accounts</span></div>
-        <div class="metric"><span class="metric-icon"><i class="fa-solid fa-clock"></i></span><strong class="metric-value" th:text="${pendingUsers}">0</strong><span class="metric-label">Pending verification</span></div>
         <div class="metric"><span class="metric-icon"><i class="fa-solid fa-code"></i></span><strong class="metric-value" th:text="${totalSnippets}">0</strong><span class="metric-label">Saved snippets</span></div>
         <div class="metric"><span class="metric-icon"><i class="fa-solid fa-share-nodes"></i></span><strong class="metric-value" th:text="${publicSnippets}">0</strong><span class="metric-label">Public snippets</span></div>
         <div class="metric"><span class="metric-icon"><i class="fa-solid fa-lock"></i></span><strong class="metric-value" th:text="${privateSnippets}">0</strong><span class="metric-label">Private snippets</span></div>
@@ -91,15 +87,11 @@
         <div class="section-head"><h2>User accounts</h2><span th:text="${totalUsers + ' total'}">0 total</span></div>
         <div class="table-wrap">
             <table>
-                <thead><tr><th>User</th><th>Email</th><th>Status</th><th>Role</th><th>Created</th></tr></thead>
+                <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Created</th></tr></thead>
                 <tbody>
                 <tr th:each="account : ${users}">
                     <td th:text="${account.username}">username</td>
                     <td th:text="${account.email}">email@example.com</td>
-                    <td>
-                        <span class="status verified" th:if="${account.verified}"><span class="status-dot"></span>Verified</span>
-                        <span class="status pending" th:unless="${account.verified}"><span class="status-dot"></span>Pending</span>
-                    </td>
                     <td th:text="${account.role}">USER</td>
                     <td th:text="${account.createdAt != null ? #temporals.format(account.createdAt, 'dd MMM yyyy, HH:mm') : 'Before tracking'}">19 Jun 2026</td>
                 </tr>

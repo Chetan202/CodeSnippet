@@ -20,9 +20,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     private static final Set<String> LIMITED_PATHS = Set.of(
             "/login",
             "/api/auth/login",
-            "/register",
-            "/resend-verification",
-            "/check-email"
+            "/register"
     );
 
     private final Map<String, Window> windows = new ConcurrentHashMap<>();
@@ -71,8 +69,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (!LIMITED_PATHS.contains(request.getRequestURI())) {
             return false;
         }
-        return "POST".equalsIgnoreCase(request.getMethod())
-                || "/check-email".equals(request.getRequestURI());
+        return "POST".equalsIgnoreCase(request.getMethod());
     }
 
     private String clientIp(HttpServletRequest request) {

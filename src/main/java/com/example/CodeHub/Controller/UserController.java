@@ -1,8 +1,6 @@
 package com.example.CodeHub.Controller;
 
 import com.example.CodeHub.Dto.UserDto;
-import com.example.CodeHub.Entity.User;
-import com.example.CodeHub.Services.EmailService;
 import com.example.CodeHub.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,11 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.security.core.context.SecurityContextHolder;
-import java.util.HashMap;
-import java.util.Map;
 
 import java.security.Principal;
 
@@ -25,9 +18,6 @@ public class UserController {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    private EmailService emailService;
 
     private UserService userService;
 
@@ -57,106 +47,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerSava(@ModelAttribute("user") UserDto userDto, Model model) {
-        // Check if username exists
-        User userByUsername = userService.findByUsername(userDto.getUsername());
-        if (userByUsername != null) {
-            model.addAttribute("Userexist", userByUsername);
-            return "register";
-        }
-        
-        // Check if email exists
-        User userByEmail = userService.findByEmail(userDto.getEmail());
-        if (userByEmail != null) {
-            model.addAttribute("emailExists", true);
-            return "register";
-        }
-        
-        // Save the user
-        User savedUser = userService.save(userDto);
-
-        // Generate verification token
-        String token = userService.generateVerificationToken(savedUser);
-
-        // Send verification email
-        boolean emailSent = emailService.sendVerificationEmail(savedUser.getEmail(), token);
-
-        return emailSent
-                ? "redirect:/register?success"
-                : "redirect:/register?emailDeliveryFailed";
-    }
-
-    @GetMapping("/check-email")
-    @ResponseBody
-    public Map<String, Boolean> checkEmailExists(@RequestParam String email) {
-        User user = userService.findByEmail(email);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("exists", user != null);
-        return response;
-    }
-    
-    @GetMapping("/verify")
-    public String verifyAccount(@RequestParam("token") String token, Model model) {
-        // First check if the token exists
-        User user = userService.findByVerificationToken(token);
-        
-        if (user == null) {
-            model.addAttribute("message", "Invalid verification token. The token may have expired or been used already.");
-            model.addAttribute("status", "error");
-        } else if (!userService.isVerificationTokenValid(user)) {
-            model.addAttribute("message", "This verification link has expired. Request a new link from the registration page.");
-            model.addAttribute("status", "error");
-        } else {
-            // Valid token and user not yet verified, proceed with verification
-            boolean verified = userService.verifyUser(token);
-            
-            if (verified) {
-                model.addAttribute("message", "Your account has been successfully verified. You can now login.");
-                model.addAttribute("status", "success");
-            } else {
-                model.addAttribute("message", "Failed to verify your account. Please try again or contact support.");
-                model.addAttribute("status", "error");
-            }
-        }
-
-        return "verification";
-    }
-
-    @PostMapping("/resend-verification")
-    public String resendVerification(@RequestParam("email") String email) {
-        User user = userService.findByEmail(email.trim());
-        if (user == null) {
-            return "redirect:/register?resendUnknown";
-        }
-        if (user.isVerified()) {
-            return "redirect:/login?verified";
-        }
-
-        String token = userService.generateVerificationToken(user);
-        boolean sent = emailService.sendVerificationEmail(user.getEmail(), token);
-        return sent
-                ? "redirect:/register?resent"
-                : "redirect:/register?emailDeliveryFailed";
-    }
-
-    @GetMapping("/settings/notifications")
-    public String notificationSettings(Model model) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username);
-        model.addAttribute("user", user);
-        return "notification-settings";
-    }
-
-    @PostMapping("/settings/notifications")
-    public String updateNotificationSettings(@RequestParam(name = "notifyComments", defaultValue = "false") boolean notifyComments,
-                                             @RequestParam(name = "notifyApprovals", defaultValue = "false") boolean notifyApprovals,
-                                             @RequestParam(name = "notifyProductUpdates", defaultValue = "false") boolean notifyProductUpdates) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username);
-        user.setNotifyComments(notifyComments);
-        user.setNotifyApprovals(notifyApprovals);
-        user.setNotifyProductUpdates(notifyProductUpdates);
-        userService.saveExisting(user);
-        return "redirect:/settings/notifications?saved";
+        return "redirect:/login";
     }
 //    @PostMapping
 //    public ResponseEntity<String> registerSava(@ModelAttribute("user") UserDto userDto, Model model) {

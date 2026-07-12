@@ -35,8 +35,6 @@ public class AdminController {
         LocalDate today = LocalDate.now();
         model.addAttribute("users", userRepository.findAllByOrderByCreatedAtDesc());
         model.addAttribute("totalUsers", userRepository.count());
-        model.addAttribute("verifiedUsers", userRepository.countByIsVerifiedTrue());
-        model.addAttribute("pendingUsers", userRepository.countByIsVerifiedFalse());
         model.addAttribute("totalSnippets", snippetService.countSnippets());
         model.addAttribute("publicSnippets", snippetService.countPublicSnippets());
         model.addAttribute("privateSnippets", snippetService.countPrivateSnippets());
