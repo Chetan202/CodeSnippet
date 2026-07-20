@@ -40,31 +40,20 @@ public class SnippetController {
     }
 
     @PostMapping("/snippets/create")
-    public String createSnippet(@ModelAttribute("snippet") SnippetDto snippetDto, 
-                              RedirectAttributes redirectAttributes) {
-        // Get current authenticated user
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        
-        // Check if user is authenticated (not anonymous)
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
-            User user = userRepository.findByEmail(auth.getName());
-            
-            if (user != null) {
-                // Save the snippet associated with the logged-in user
-                Snippet savedSnippet = snippetService.save(snippetDto, user);
-                
-                // Add success message
-                redirectAttributes.addFlashAttribute("snippetCreated", true);
-                redirectAttributes.addFlashAttribute("snippetId", savedSnippet.getId());
-                
-                // For URL parameter approach as a fallback
-                return "redirect:/home?snippetCreated=true";
-            }
+    public String createSnippet(@ModelAttribute("snippet") SnippetDto snippetDto,
+                                Model model, RedirectAttributes redirectAttributes) {
+        User user = currentUser();
+        if (user == null) {
+            return "redirect:/login";
         }
-        
-        // If not authenticated or user not found, redirect to login
-        redirectAttributes.addFlashAttribute("loginError", "You must be logged in to create snippets.");
-        return "redirect:/login";
+        try {
+            snippetService.save(snippetDto, user);
+            return "redirect:/home?snippetCreated=true";
+        } catch (Exception e) {
+            model.addAttribute("snippet", snippetDto);
+            model.addAttribute("error", "Failed to save snippet. Please try again.");
+            return "create-snippet";
+        }
     }
     
     @GetMapping("/snippets/{id}")
@@ -344,6 +333,10 @@ public class SnippetController {
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
             return null;
         }
-        return userRepository.findByEmail(auth.getName());
+        User user = userRepository.findByEmail(auth.getName());
+        if (user == null) {
+            user = userRepository.findByUsername(auth.getName());
+        }
+        return user;
     }
 }

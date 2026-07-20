@@ -66,10 +66,12 @@ public class homeController {
         // User is authenticated, get their snippets
         User user = userRepository.findByEmail(auth.getName());
         if (user == null) {
-            // This shouldn't happen normally, but just in case
+            user = userRepository.findByUsername(auth.getName());
+        }
+        if (user == null) {
             return "redirect:/login";
         }
-        
+
         // Record the user's visit for statistics tracking
         userViewService.recordView(user);
         model.addAttribute("user", user);
@@ -120,7 +122,9 @@ public class homeController {
         // User is authenticated, get their snippets
         User user = userRepository.findByEmail(auth.getName());
         if (user == null) {
-            // This shouldn't happen normally, but just in case
+            user = userRepository.findByUsername(auth.getName());
+        }
+        if (user == null) {
             response.put("snippets", List.of());
             response.put("currentPage", 0);
             response.put("totalPages", 0);
