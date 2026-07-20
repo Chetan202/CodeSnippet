@@ -3,33 +3,86 @@ package com.example.CodeHub.Services;
 import com.example.CodeHub.Dto.UserDto;
 import com.example.CodeHub.Entity.User;
 import com.example.CodeHub.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
+    private final String adminEmail;
+    private final String mailFrom;
 
-    @Value("${app.admin-email:chetanjha888@gmail.com}")
-    private String adminEmail;
-
-    private UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        super();
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           JavaMailSender mailSender,
+                           @Value("${app.admin-email:chetanjha888@gmail.com}") String adminEmail,
+                           @Value("${app.mail-from:}") String mailFrom) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
+        this.adminEmail = adminEmail;
+        this.mailFrom = mailFrom;
+    }
+
+    @Override
+    public User registerUser(UserDto userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()) != null) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+        if (userRepository.findByUsername(userDto.getUsername()) != null) {
+            throw new IllegalArgumentException("Username already taken");
+        }
+        User user = new User(userDto.getUsername(),
+                passwordEncoder.encode(userDto.getPassword()),
+                userDto.getEmail());
+        user.setRole(adminEmail.equalsIgnoreCase(userDto.getEmail()) ? "ADMIN" : "USER");
+        user.setVerified(false);
+        String otp = generateOtp();
+        user.setOtp(otp);
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+        sendOtpEmail(userDto.getEmail(), otp);
+        return user;
+    }
+
+    @Override
+    public boolean verifyOtp(String email, String otp) {
+        User user = userRepository.findByEmail(email);
+        if (user == null || user.getOtp() == null) return false;
+        if (user.getOtpExpiry() == null || user.getOtpExpiry().isBefore(LocalDateTime.now())) return false;
+        if (!user.getOtp().equals(otp)) return false;
+        user.setVerified(true);
+        user.setOtp(null);
+        user.setOtpExpiry(null);
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public void resendOtp(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null || user.isVerified()) return;
+        String otp = generateOtp();
+        user.setOtp(otp);
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+        sendOtpEmail(email, otp);
     }
 
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    
+
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -37,16 +90,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserDto userDto) {
-        User user = new User(userDto.getUsername(), passwordEncoder.encode(userDto.getPassword()),
+        User user = new User(userDto.getUsername(),
+                passwordEncoder.encode(userDto.getPassword()),
                 userDto.getEmail());
-        
-        // Set ADMIN role for the specific email
-        if (adminEmail.equalsIgnoreCase(userDto.getEmail())) {
-            user.setRole("ADMIN");
-        } else {
-            user.setRole("USER");
-        }
-        
+        user.setRole(adminEmail.equalsIgnoreCase(userDto.getEmail()) ? "ADMIN" : "USER");
         return userRepository.save(user);
     }
 
@@ -55,22 +102,27 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * Updates roles for all existing users based on their email address
-     * Only the configured admin email will have admin privileges.
-     */
+    @Override
     public void updateUserRoles() {
-        Iterable<User> allUsers = userRepository.findAll();
-        for (User user : allUsers) {
-            if (adminEmail.equalsIgnoreCase(user.getEmail())) {
-                user.setRole("ADMIN");
-            } else {
-                // Make sure everyone else has USER role
-                if (!"USER".equals(user.getRole())) {
-                    user.setRole("USER");
-                }
+        for (User user : userRepository.findAll()) {
+            String role = adminEmail.equalsIgnoreCase(user.getEmail()) ? "ADMIN" : "USER";
+            if (!role.equals(user.getRole())) {
+                user.setRole(role);
+                userRepository.save(user);
             }
-            userRepository.save(user);
         }
+    }
+
+    private String generateOtp() {
+        return String.format("%06d", new SecureRandom().nextInt(1000000));
+    }
+
+    private void sendOtpEmail(String to, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(mailFrom.isBlank() ? to : mailFrom);
+        message.setTo(to);
+        message.setSubject("CodeHub - Your verification code");
+        message.setText("Your verification code is: " + otp + "\n\nThis code expires in 10 minutes.\n\nIf you did not register, ignore this email.");
+        mailSender.send(message);
     }
 }

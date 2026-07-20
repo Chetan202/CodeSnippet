@@ -26,23 +26,34 @@
     <section class="auth-main">
         <div class="auth-card">
             <h2>Welcome back</h2>
-            <p class="auth-subtitle">Continue with Google or GitHub.</p>
+            <p class="auth-subtitle">Sign in to your account.</p>
 
             <div class="alert alert-error" th:if="${param.error}">
-                <p>Login failed. Try another provider or check your account access.</p>
+                <p>Invalid username or password. Please try again.</p>
             </div>
             <div class="alert alert-error" th:if="${loginError}">
-                <p th:text="${loginError}">You must be logged in to continue.</p>
+                <p th:text="${loginError}"></p>
             </div>
             <div class="alert alert-success" th:if="${param.logout}">
                 <p>You have been logged out.</p>
             </div>
-            <div class="oauth-actions">
-                <a class="oauth-button" th:href="@{/oauth2/authorization/google}">Continue with Google</a>
-                <a class="oauth-button" th:href="@{/oauth2/authorization/github}">Continue with GitHub</a>
+            <div class="alert alert-success" th:if="${param.verified}">
+                <p>Email verified! You can now log in.</p>
             </div>
 
-            <p class="auth-footer">No password needed. Your account is created automatically.</p>
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autofocus placeholder="Your username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Your password">
+                </div>
+                <button type="submit" class="btn-primary">Sign in</button>
+            </form>
+
+            <p class="auth-footer">No account? <a th:href="@{/register}">Create one</a></p>
         </div>
     </section>
 </main>

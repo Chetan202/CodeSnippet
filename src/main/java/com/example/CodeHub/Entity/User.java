@@ -26,6 +26,12 @@ public class User {
     private int failedLoginAttempts;
     @Column(name = "locked_until")
     private LocalDateTime lockedUntil;
+    @Column(name = "is_verified", nullable = false, columnDefinition = "boolean default false")
+    private boolean isVerified = false;
+    @Column(name = "otp")
+    private String otp;
+    @Column(name = "otp_expiry")
+    private LocalDateTime otpExpiry;
 
     public User() {
 
@@ -124,6 +130,15 @@ public class User {
     public void setLockedUntil(LocalDateTime lockedUntil) {
         this.lockedUntil = lockedUntil;
     }
+
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean verified) { isVerified = verified; }
+
+    public String getOtp() { return otp; }
+    public void setOtp(String otp) { this.otp = otp; }
+
+    public LocalDateTime getOtpExpiry() { return otpExpiry; }
+    public void setOtpExpiry(LocalDateTime otpExpiry) { this.otpExpiry = otpExpiry; }
 
     public boolean isAccountLocked() {
         return lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now());
