@@ -33,12 +33,8 @@
 
             <form th:action="@{/register}" th:object="${user}" method="post">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" th:field="*{username}" required autofocus placeholder="Choose a username">
-                </div>
-                <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" th:field="*{email}" required placeholder="your@email.com">
+                    <input type="email" id="email" th:field="*{email}" required autofocus placeholder="your@email.com">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>

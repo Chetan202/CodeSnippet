@@ -36,12 +36,12 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
-        String username = request.getParameter("username");
-        User user = username == null ? null : userRepository.findByUsername(username);
+        String email = request.getParameter("email");
+        User user = email == null ? null : userRepository.findByEmail(email);
 
         if (exception instanceof DisabledException && user != null) {
-            String email = URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
-            response.sendRedirect("/verify-otp?email=" + email + "&notverified=true");
+            String encodedEmail = URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
+            response.sendRedirect("/verify-otp?email=" + encodedEmail + "&notverified=true");
             return;
         }
 

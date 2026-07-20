@@ -38,10 +38,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(userDto.getEmail()) != null) {
             throw new IllegalArgumentException("Email already registered");
         }
-        if (userRepository.findByUsername(userDto.getUsername()) != null) {
-            throw new IllegalArgumentException("Username already taken");
-        }
-        User user = new User(userDto.getUsername(),
+        User user = new User(userDto.getEmail(),
                 passwordEncoder.encode(userDto.getPassword()),
                 userDto.getEmail());
         user.setRole(adminEmail.equalsIgnoreCase(userDto.getEmail()) ? "ADMIN" : "USER");
@@ -90,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserDto userDto) {
-        User user = new User(userDto.getUsername(),
+        User user = new User(userDto.getEmail(),
                 passwordEncoder.encode(userDto.getPassword()),
                 userDto.getEmail());
         user.setRole(adminEmail.equalsIgnoreCase(userDto.getEmail()) ? "ADMIN" : "USER");
