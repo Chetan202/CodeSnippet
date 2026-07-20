@@ -223,7 +223,7 @@
                         <h3 class="mb-0">Create New Snippet</h3>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/snippets/create}" th:object="${snippet}" method="post">
+                        <form th:action="@{/snippets/create}" th:object="${snippet}" method="post" novalidate>
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
@@ -252,7 +252,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="code" class="form-label">Code</label>
-                                <textarea class="form-control code-editor" id="code" th:field="*{code}" rows="10" required></textarea>
+                                <textarea class="form-control code-editor" id="code" th:field="*{code}" rows="10"></textarea>
                             </div>
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" type="checkbox" role="switch" id="publicSnippet" th:field="*{publicSnippet}">
