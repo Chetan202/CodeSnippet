@@ -10,6 +10,4 @@ public interface UserService {
     User saveExisting(User user);
     void updateUserRoles();
     User registerUser(UserDto userDto);
-    boolean verifyOtp(String email, String otp);
-    void resendOtp(String email);
 }

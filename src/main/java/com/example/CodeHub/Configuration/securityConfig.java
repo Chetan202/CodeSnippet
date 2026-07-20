@@ -43,8 +43,7 @@ public class securityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/register", "/login", "/verify-otp", "/resend-otp",
-                            "/share/**", "/users/**").permitAll();
+                    registry.requestMatchers("/register", "/login", "/share/**", "/users/**").permitAll();
                     registry.requestMatchers("/api/auth/login").permitAll();
                     registry.requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll();
                     registry.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll();

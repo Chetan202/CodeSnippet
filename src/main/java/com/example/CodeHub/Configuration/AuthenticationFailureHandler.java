@@ -6,14 +6,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Component
@@ -38,12 +35,6 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
                                         AuthenticationException exception) throws IOException, ServletException {
         String email = request.getParameter("email");
         User user = email == null ? null : userRepository.findByEmail(email);
-
-        if (exception instanceof DisabledException && user != null) {
-            String encodedEmail = URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
-            response.sendRedirect("/verify-otp?email=" + encodedEmail + "&notverified=true");
-            return;
-        }
 
         if (user != null) {
             int failedAttempts = user.getFailedLoginAttempts() + 1;

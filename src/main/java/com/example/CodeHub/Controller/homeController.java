@@ -64,7 +64,7 @@ public class homeController {
         }
         
         // User is authenticated, get their snippets
-        User user = userRepository.findByUsername(auth.getName());
+        User user = userRepository.findByEmail(auth.getName());
         if (user == null) {
             // This shouldn't happen normally, but just in case
             return "redirect:/login";
@@ -118,7 +118,7 @@ public class homeController {
         }
         
         // User is authenticated, get their snippets
-        User user = userRepository.findByUsername(auth.getName());
+        User user = userRepository.findByEmail(auth.getName());
         if (user == null) {
             // This shouldn't happen normally, but just in case
             response.put("snippets", List.of());

@@ -47,7 +47,7 @@ public class SnippetController {
         
         // Check if user is authenticated (not anonymous)
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
-            User user = userRepository.findByUsername(auth.getName());
+            User user = userRepository.findByEmail(auth.getName());
             
             if (user != null) {
                 // Save the snippet associated with the logged-in user
@@ -76,7 +76,7 @@ public class SnippetController {
         }
         
         // Get the current user
-        User currentUser = userRepository.findByUsername(auth.getName());
+        User currentUser = userRepository.findByEmail(auth.getName());
         if (currentUser == null) {
             return "redirect:/login";
         }
@@ -111,7 +111,7 @@ public class SnippetController {
         }
         
         // Check if user is the owner of the snippet
-        User currentUser = userRepository.findByUsername(auth.getName());
+        User currentUser = userRepository.findByEmail(auth.getName());
         if (!snippet.getUser().getId().equals(currentUser.getId())) {
             return "redirect:/home";  // User is not the owner
         }
@@ -135,7 +135,7 @@ public class SnippetController {
             return "redirect:/login";
         }
         
-        User currentUser = userRepository.findByUsername(auth.getName());
+        User currentUser = userRepository.findByEmail(auth.getName());
         Snippet snippet = snippetService.findById(id);
         
         if (snippet == null || !snippet.getUser().getId().equals(currentUser.getId())) {
@@ -155,7 +155,7 @@ public class SnippetController {
         }
         
         // Get the current user
-        User currentUser = userRepository.findByUsername(auth.getName());
+        User currentUser = userRepository.findByEmail(auth.getName());
         if (currentUser == null) {
             return "redirect:/login";
         }
@@ -184,7 +184,7 @@ public class SnippetController {
         }
         
         // Get the current user
-        User currentUser = userRepository.findByUsername(auth.getName());
+        User currentUser = userRepository.findByEmail(auth.getName());
         if (currentUser == null) {
             return "redirect:/login";
         }
@@ -304,7 +304,7 @@ public class SnippetController {
         
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
             // User is authenticated, only show their snippets
-            User currentUser = userRepository.findByUsername(auth.getName());
+            User currentUser = userRepository.findByEmail(auth.getName());
             if (currentUser != null) {
                 // Get suggestions for the current user only
                 suggestions = snippetService.searchUserSnippets(currentUser, searchTerm, pageable).getContent();
@@ -344,6 +344,6 @@ public class SnippetController {
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
             return null;
         }
-        return userRepository.findByUsername(auth.getName());
+        return userRepository.findByEmail(auth.getName());
     }
 }
