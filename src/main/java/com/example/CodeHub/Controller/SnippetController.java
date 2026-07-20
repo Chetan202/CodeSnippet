@@ -5,7 +5,9 @@ import com.example.CodeHub.Entity.Snippet;
 import com.example.CodeHub.Entity.User;
 import com.example.CodeHub.Repository.UserRepository;
 import com.example.CodeHub.Services.SnippetService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,9 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.ResponseEntity;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,10 +32,12 @@ public class SnippetController {
 
     private final SnippetService snippetService;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
-    public SnippetController(SnippetService snippetService, UserRepository userRepository) {
+    public SnippetController(SnippetService snippetService, UserRepository userRepository, ObjectMapper objectMapper) {
         this.snippetService = snippetService;
         this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/snippets/create")
@@ -326,6 +333,91 @@ public class SnippetController {
                 .collect(Collectors.toList());
         
         return ResponseEntity.ok(previewData);
+    }
+
+    @GetMapping("/snippets/import-export")
+    public String importExportPage(Model model) {
+        User user = currentUser();
+        if (user == null) return "redirect:/login";
+        model.addAttribute("user", user);
+        return "import-export";
+    }
+
+    @GetMapping("/snippets/export")
+    public ResponseEntity<byte[]> exportSnippets() {
+        User user = currentUser();
+        if (user == null) return ResponseEntity.status(401).build();
+        try {
+            List<Map<String, Object>> data = snippetService.findSnippetsByUser(user).stream().map(s -> {
+                Map<String, Object> m = new LinkedHashMap<>();
+                m.put("title", s.getTitle());
+                m.put("language", s.getLanguage());
+                m.put("code", s.getCode());
+                m.put("publicSnippet", s.isPublicSnippet());
+                return m;
+            }).collect(Collectors.toList());
+            byte[] bytes = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(data);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"codehub-snippets.json\"")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(bytes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/snippets/import/template")
+    public ResponseEntity<byte[]> downloadTemplate() {
+        String template = "[\n" +
+                "  {\n" +
+                "    \"title\": \"My First Snippet\",\n" +
+                "    \"language\": \"JavaScript\",\n" +
+                "    \"code\": \"console.log('Hello, World!');\",\n" +
+                "    \"publicSnippet\": false\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Python Hello World\",\n" +
+                "    \"language\": \"Python\",\n" +
+                "    \"code\": \"print('Hello, World!')\",\n" +
+                "    \"publicSnippet\": false\n" +
+                "  }\n" +
+                "]\n";
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"snippets-template.json\"")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(template.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @PostMapping("/snippets/import")
+    public String importSnippets(@RequestParam("file") MultipartFile file,
+                                 RedirectAttributes redirectAttributes) {
+        User user = currentUser();
+        if (user == null) return "redirect:/login";
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("importError", "Please select a file to upload.");
+            return "redirect:/snippets/import-export";
+        }
+        try {
+            String content = new String(file.getBytes(), StandardCharsets.UTF_8);
+            List<SnippetDto> dtos = objectMapper.readValue(content,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, SnippetDto.class));
+            int count = 0;
+            for (SnippetDto dto : dtos) {
+                if (dto.getTitle() != null && !dto.getTitle().isBlank()
+                        && dto.getCode() != null && !dto.getCode().isBlank()) {
+                    if (dto.getLanguage() == null || dto.getLanguage().isBlank()) {
+                        dto.setLanguage("Plaintext");
+                    }
+                    snippetService.save(dto, user);
+                    count++;
+                }
+            }
+            redirectAttributes.addFlashAttribute("importSuccess", count + " snippet(s) imported successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("importError",
+                    "Invalid file format. Please use the JSON template provided.");
+        }
+        return "redirect:/snippets/import-export";
     }
 
     private User currentUser() {
