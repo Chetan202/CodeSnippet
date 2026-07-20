@@ -41,11 +41,13 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UserDto dto = new UserDto("alice", "pass", "alice@example.com");
+        UserDto dto = new UserDto();
+        dto.setEmail("alice@example.com");
+        dto.setPassword("pass");
         User saved = userService.save(dto);
 
         assertThat(saved.getRole()).isEqualTo("USER");
-        assertThat(saved.getUsername()).isEqualTo("alice");
+        assertThat(saved.getEmail()).isEqualTo("alice@example.com");
         verify(passwordEncoder).encode("pass");
     }
 
@@ -54,7 +56,9 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UserDto dto = new UserDto("admin", "pass", "admin@example.com");
+        UserDto dto = new UserDto();
+        dto.setEmail("admin@example.com");
+        dto.setPassword("pass");
         User saved = userService.save(dto);
 
         assertThat(saved.getRole()).isEqualTo("ADMIN");
@@ -65,7 +69,9 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        UserDto dto = new UserDto("admin", "pass", "ADMIN@EXAMPLE.COM");
+        UserDto dto = new UserDto();
+        dto.setEmail("ADMIN@EXAMPLE.COM");
+        dto.setPassword("pass");
         User saved = userService.save(dto);
 
         assertThat(saved.getRole()).isEqualTo("ADMIN");
