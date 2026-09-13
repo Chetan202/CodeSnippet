@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in - CodeHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-page">
+    <section class="auth-intro">
+        <a class="brand" th:href="@{/login}">
+            <span class="brand-mark">&lt;/&gt;</span>
+            <span>CodeHub</span>
+        </a>
+        <div class="auth-copy">
+            <h1>Your snippets, ready when you are.</h1>
+            <p>Sign in to create, organize, search, and share reusable code in one focused workspace.</p>
+        </div>
+        <p class="auth-note">A simple home for the code you use again.</p>
+    </section>
+
+    <section class="auth-main">
+        <div class="auth-card">
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Sign in to your account.</p>
+
+            <div class="alert alert-error" th:if="${param.error}">
+                <p>Invalid username or password. Please try again.</p>
+            </div>
+            <div class="alert alert-error" th:if="${loginError}">
+                <p th:text="${loginError}"></p>
+            </div>
+            <div class="alert alert-success" th:if="${param.logout}">
+                <p>You have been logged out.</p>
+            </div>
+            <div class="alert alert-success" th:if="${param.registered}">
+                <p>Account created! You can now log in.</p>
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required autofocus placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Your password">
+                </div>
+                <button type="submit" class="btn-primary">Sign in</button>
+            </form>
+
+            <p class="auth-footer">No account? <a th:href="@{/register}">Create one</a></p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

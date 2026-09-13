@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account - CodeHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-page">
+    <section class="auth-intro">
+        <a class="brand" th:href="@{/login}">
+            <span class="brand-mark">&lt;/&gt;</span>
+            <span>CodeHub</span>
+        </a>
+        <div class="auth-copy">
+            <h1>Keep useful code within reach.</h1>
+            <p>Create an account to save snippets, find them quickly, and keep your coding workflow organized.</p>
+        </div>
+    </section>
+
+    <section class="auth-main">
+        <div class="auth-card">
+            <h2>Create your account</h2>
+            <p class="auth-subtitle">A verification code will be sent to your email.</p>
+
+            <div class="alert alert-error" th:if="${error}">
+                <p th:text="${error}"></p>
+            </div>
+
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" th:field="*{email}" required autofocus placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" th:field="*{password}" required placeholder="Create a password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm password</label>
+                    <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required placeholder="Repeat your password">
+                </div>
+                <button type="submit" class="btn-primary">Create account</button>
+            </form>
+
+            <p class="auth-footer">Already registered? <a th:href="@{/login}">Log in</a></p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

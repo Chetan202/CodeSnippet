@@ -1,0 +1,71 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  gateway:
+    build:
+      context: ./microservices/gateway
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      JWT_SECRET: local-dev-secret-change-me-local-dev-secret
+      AUTH_SERVICE_URL: http://auth-service:8081
+      SNIPPET_SERVICE_URL: http://snippet-service:8082
+      NOTIFICATION_ADMIN_SERVICE_URL: http://notification-admin-service:8083
+    depends_on:
+      - auth-service
+      - snippet-service
+      - notification-admin-service
+
+  auth-service:
+    build:
+      context: ./microservices/auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      JWT_SECRET: local-dev-secret-change-me-local-dev-secret
+      REDIS_URL: redis://redis:6379
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      - redis
+
+  snippet-service:
+    build:
+      context: ./microservices/snippet-service
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      JWT_SECRET: local-dev-secret-change-me-local-dev-secret
+      REDIS_URL: redis://redis:6379
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      - redis
+
+  notification-admin-service:
+    build:
+      context: ./microservices/notification-admin-service
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
+      JWT_SECRET: local-dev-secret-change-me-local-dev-secret
+      REDIS_URL: redis://redis:6379
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM: ${MAIL_FROM}
+    depends_on:
+      - redis
